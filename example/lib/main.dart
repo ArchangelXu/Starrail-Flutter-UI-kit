@@ -1,108 +1,133 @@
+import 'dart:ui';
+
+import 'package:example/pages/buttons.dart';
+import 'package:example/pages/dialog.dart';
+import 'package:example/pages/input.dart';
+import 'package:example/pages/navigation.dart';
+import 'package:example/pages/progress.dart';
+import 'package:example/pages/selectable.dart';
 import 'package:example/util.dart';
 import 'package:flutter/material.dart';
-import 'package:starrail_ui/theme/base.dart';
-import 'package:starrail_ui/views/buttons.dart';
+import 'package:starrail_ui/views/buttons/normal.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+ValueNotifier<bool> globalBrightnessLight2 = ValueNotifier(true);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'UI Kit Demo',
-      theme: srTheme,
-      home: const DemoPage(),
+    return ValueListenableBuilder(
+      valueListenable: globalBrightnessLight2,
+      builder: (context, value, child) {
+        var themeData = ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple,
+          ),
+        );
+        return MaterialApp(
+          theme: themeData,
+          darkTheme: themeData.copyWith(
+            brightness: Brightness.dark,
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.deepPurple, brightness: Brightness.dark),
+          ),
+          themeMode: value ? ThemeMode.light : ThemeMode.dark,
+          title: 'Starrail UI Kit Demo',
+          scrollBehavior: DemoScrollBehavior(),
+          home: const DemoPage(),
+        );
+      },
     );
   }
 }
 
-class DemoPage extends StatelessWidget {
+class DemoScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.stylus,
+      };
+}
+
+class DemoPage extends StatefulWidget {
   const DemoPage({super.key});
+
+  @override
+  DemoPageState createState() => DemoPageState();
+}
+
+class DemoPageState extends State<DemoPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+  final List<_PageInfo> _pages = <_PageInfo>[
+    _PageInfo("button", const ButtonPage()),
+    _PageInfo("input", const InputPage()),
+    _PageInfo("selectable", const SelectablePage()),
+    _PageInfo("progress", const ProgressPage()),
+    _PageInfo("dialog", const DialogPage()),
+    _PageInfo("navigation", const NavigationPage()),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _pages.length, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Demo")),
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SRButton.text(
-                text: "SRButton.text",
-                onTap: () => showSnackBar(context, "tap"),
-              ),
-              const SizedBox(height: 16),
-              SRButton.text(
-                text: "SRButton onTap=null",
-                // onTap: () => showSnackBar(context, "tap2"),
-              ),
-              const SizedBox(height: 16),
-              SRButton.text(
-                text: "SRButton highlighted",
-                highlightType: SRButtonHighlightType.highlighted,
-                onTap: () => showSnackBar(context, "tap"),
-              ),
-              const SizedBox(height: 16),
-              SRButton.text(
-                text: "SRButton highlighted plus",
-                highlightType: SRButtonHighlightType.highlightedPlus,
-                onTap: () => showSnackBar(context, "tap"),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: SRButton.custom(
-                      expanded: true,
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.add,
-                            size: 16,
-                          ),
-                          SizedBox(width: 8),
-                          Text("SRButton with custom child"),
-                          SizedBox(width: 8),
-                        ],
-                      ),
-                      onTap: () => showSnackBar(context, "tap"),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SRButton.circular(
-                    child: Icon(Icons.message_rounded),
-                    onTap: () => showSnackBar(context, "tap"),
-                  ),
-                  SizedBox(width: 16),
-                  SRButton.circular(
-                    child: Icon(Icons.image_rounded),
-                    highlightType: SRButtonHighlightType.highlighted,
-                    onTap: () => showSnackBar(context, "tap"),
-                  ),
-                  SizedBox(width: 16),
-                  SRButton.circular(
-                    child: Icon(Icons.add_rounded),
-                  ),
-                ],
-              ),
-            ],
-          ),
+      appBar: AppBar(
+        title: const Text('UI Kit Demo'),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorSize: TabBarIndicatorSize.label,
+          isScrollable: true,
+          tabs: _pages.map((e) => Tab(text: e.title.capitalize())).toList(),
         ),
+        actions: [
+          ValueListenableBuilder(
+            valueListenable: globalBrightnessLight2,
+            builder: (BuildContext context, value, Widget? child) =>
+                SRButton.circular(
+              iconData:
+                  value ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+              onPress: () {
+                setState(() {
+                  globalBrightnessLight2.value = !globalBrightnessLight2.value;
+                });
+              },
+            ),
+          ),
+          const SizedBox(
+            width: 48,
+          )
+        ],
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: _pages.map((e) => e.page).toList(),
       ),
     );
   }
+}
+
+class _PageInfo {
+  final String title;
+  final Widget page;
+
+  _PageInfo(this.title, this.page);
 }

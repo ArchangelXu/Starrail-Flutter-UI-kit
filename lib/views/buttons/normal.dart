@@ -1,9 +1,13 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:starrail_ui/theme/base.dart';
 import 'package:starrail_ui/theme/colors.dart';
 import 'package:starrail_ui/theme/dimens.dart';
+import 'package:starrail_ui/util/canvas.dart';
+import 'package:starrail_ui/views/base/listener.dart';
+import 'package:starrail_ui/views/misc/icon.dart';
 
 enum SRButtonHighlightType {
   none(0),
@@ -16,14 +20,16 @@ enum SRButtonHighlightType {
 }
 
 class SRButton extends StatelessWidget {
-  static const double _minHeight = 48;
-  static const double _circularMinSize = 40;
+  static const double _minHeight = 32;
+  static const double _circularMinSize = 26;
+  static const double _iconSize = 14;
   static const _constraints = BoxConstraints(
     minWidth: _minHeight * 3,
     minHeight: _minHeight,
   );
   final Widget child;
-  final VoidCallback? onTap;
+  final VoidCallback? onPress;
+  final VoidCallback? onLongPress;
   final bool expanded;
   final bool circular;
   final Size? circleSize;
@@ -31,37 +37,34 @@ class SRButton extends StatelessWidget {
   final SRButtonHighlightType highlightType;
   final Color backgroundColor;
 
-  // SRButton.text({
-  //   super.key,
-  //   required String text,
-  //   this.expanded = false,
-  //   this.highlightType = SRButtonHighlightType.none,
-  //   Color? backgroundColor,
-  //   this.onTap,
-  // })  : assert((highlightType != SRButtonHighlightType.none) ^
-  //           (backgroundColor != null)),
-  //       child = Text(
-  //         text,
-  //         style: TextStyle(
-  //           fontSize: 18,
-  //           fontWeight: FontWeight.bold,
-  //           color: onTap != null ? null : const Color(0x33FFFFFF),
-  //           shadows: onTap != null ? null : defaultTextShadow,
-  //         ),
-  //       );
+  bool get _hasTouchCallback => onPress != null || onLongPress != null;
 
   factory SRButton.circular({
     Key? key,
-    required Widget child,
+    Widget? child,
+
+    /// supports assets path/url/file path
+    String? iconPath,
+    IconData? iconData,
     Size? size,
     SRButtonHighlightType? highlightType,
     Color? backgroundColor,
-    VoidCallback? onTap,
+    VoidCallback? onPress,
+    VoidCallback? onLongPress,
   }) {
     assert(
-      !(highlightType == SRButtonHighlightType.highlightedPlus),
+      highlightType != SRButtonHighlightType.highlightedPlus,
       "Cannot use SRButtonHighlightType.highlightedPlus for circular buttons!",
     );
+    assert(
+      !(child == null && iconPath == null && iconData == null),
+      "Child or iconPath of iconData must be set!",
+    );
+    assert(
+      [child, iconPath, iconData].whereNotNull().length == 1,
+      "Only one of child, iconPath and iconData should be set!",
+    );
+    bool disabled = onPress == null && onLongPress == null;
     SRButton button = SRButton.custom(
       key: key,
       expanded: false,
@@ -69,8 +72,16 @@ class SRButton extends StatelessWidget {
       backgroundColor: backgroundColor,
       highlightType: highlightType,
       circleSize: size,
-      onTap: onTap,
-      child: FittedBox(child: child),
+      onPress: onPress,
+      onLongPress: onLongPress,
+      child: FittedBox(
+        child: _buildIcon(
+          iconData: iconData,
+          iconPath: iconPath,
+          disabled: disabled,
+          child: child,
+        ),
+      ),
     );
     return button;
   }
@@ -81,23 +92,25 @@ class SRButton extends StatelessWidget {
     bool expanded = false,
     SRButtonHighlightType? highlightType,
     Color? backgroundColor,
-    VoidCallback? onTap,
+    VoidCallback? onPress,
+    VoidCallback? onLongPress,
   }) {
     Widget child = Text(
       text,
       style: TextStyle(
         fontSize: srButtonTextSize,
         fontWeight: FontWeight.bold,
-        color: onTap != null ? null : const Color(0x33FFFFFF),
-        shadows: onTap != null ? null : defaultTextShadow,
+        color: onPress != null ? null : srButtonDisabled,
+        shadows: onPress != null ? null : srTextShadow,
       ),
     );
     SRButton button = SRButton.custom(
       expanded: expanded,
-      onTap: onTap,
       backgroundColor: backgroundColor,
       highlightType: highlightType,
       key: key,
+      onPress: onPress,
+      onLongPress: onLongPress,
       child: child,
     );
     return button;
@@ -111,7 +124,8 @@ class SRButton extends StatelessWidget {
     Size? circleSize,
     SRButtonHighlightType? highlightType,
     Color? backgroundColor,
-    VoidCallback? onTap,
+    VoidCallback? onPress,
+    VoidCallback? onLongPress,
   }) {
     assert(
         !(highlightType != null &&
@@ -120,17 +134,17 @@ class SRButton extends StatelessWidget {
         "Use either backgroundColor or SRButtonHighlightType.highlighted(or "
         "SRButtonHighlightType.highlightedPlus)! Now highlightType= $highlightType, "
         "backgroundColor= $backgroundColor");
-    SRButton button = SRButton._internal(
+    return SRButton._internal(
       key: key,
       expanded: expanded,
       circular: circular,
       circleSize: circleSize,
       backgroundColor: backgroundColor ?? srButtonBackground,
       highlightType: highlightType ?? SRButtonHighlightType.none,
-      onTap: onTap,
+      onPress: onPress,
+      onLongPress: onLongPress,
       child: child,
     );
-    return button;
   }
 
   const SRButton._internal({
@@ -141,8 +155,95 @@ class SRButton extends StatelessWidget {
     this.circleSize,
     required this.highlightType,
     required this.backgroundColor,
-    this.onTap,
+    this.onPress,
+    this.onLongPress,
   });
+
+  static Widget _buildIcon({
+    String? iconPath,
+    IconData? iconData,
+    bool disabled = false,
+    Widget? child,
+  }) {
+    return SRIcon(
+      color: disabled ? srButtonDisabled : null,
+      iconData: iconData,
+      iconPath: iconPath,
+      child: child,
+    );
+    // if (child == null) {
+    //   Color? color = disabled ? srButtonDisabled : null;
+    //   if (iconData != null) {
+    //     child = Icon(
+    //       iconData,
+    //       size: _iconSize,
+    //       color: color,
+    //     );
+    //   } else if ((iconPath != null)) {
+    //     bool svg = iconPath.toLowerCase().contains(".svg");
+    //     if (iconPath.startsWith("/")) {
+    //       //file
+    //       File file = File(iconPath);
+    //       child = svg
+    //           ? SvgPicture.file(
+    //               file,
+    //               width: _iconSize,
+    //               height: _iconSize,
+    //               fit: BoxFit.contain,
+    //               colorFilter: color == null
+    //                   ? null
+    //                   : ColorFilter.mode(color, BlendMode.srcIn),
+    //             )
+    //           : Image.file(
+    //               file,
+    //               width: _iconSize,
+    //               height: _iconSize,
+    //               fit: BoxFit.contain,
+    //               color: color,
+    //             );
+    //     } else if (iconPath.startsWith("http")) {
+    //       //network
+    //       child = svg
+    //           ? SvgPicture.network(
+    //               iconPath,
+    //               width: _iconSize,
+    //               height: _iconSize,
+    //               fit: BoxFit.contain,
+    //               colorFilter: color == null
+    //                   ? null
+    //                   : ColorFilter.mode(color, BlendMode.srcIn),
+    //             )
+    //           : Image.network(
+    //               iconPath,
+    //               width: _iconSize,
+    //               height: _iconSize,
+    //               fit: BoxFit.contain,
+    //               color: color,
+    //             );
+    //     } else {
+    //       //asset
+    //       child = svg
+    //           ? SvgPicture.asset(
+    //               iconPath,
+    //               width: _iconSize,
+    //               height: _iconSize,
+    //               fit: BoxFit.contain,
+    //               colorFilter: color == null
+    //                   ? null
+    //                   : ColorFilter.mode(color, BlendMode.srcIn),
+    //             )
+    //           : Image.asset(
+    //               iconPath,
+    //               width: _iconSize,
+    //               height: _iconSize,
+    //               fit: BoxFit.contain,
+    //               color: color,
+    //             );
+    //     }
+    //   }
+    // }
+    // return child!;
+  }
 
   LinearGradient? _getFrameGradient() {
     if (highlightType == SRButtonHighlightType.highlightedPlus) {
@@ -167,33 +268,33 @@ class SRButton extends StatelessWidget {
     double? width;
     double? height;
     if (circular) {
-      decoration = onTap != null
+      decoration = _hasTouchCallback
           ? BoxDecoration(
               shape: BoxShape.circle,
               color: _getFrameBackgroundColor(),
               border: _SRBorder.all(color: srButtonBorder),
-              boxShadow: defaultBoxShadow,
+              boxShadow: srBoxShadow,
             )
           : BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0x1AFFFFFF), width: 1.5),
+              border: Border.all(color: srButtonDisabled, width: 1),
             );
-      padding = const EdgeInsets.all(8);
-      Size size = circleSize ?? Size(_circularMinSize, _circularMinSize);
+      padding = EdgeInsets.zero;
+      Size size = circleSize ?? const Size(_circularMinSize, _circularMinSize);
       width = size.width;
       height = size.height;
     } else {
-      decoration = onTap != null
+      decoration = _hasTouchCallback
           ? BoxDecoration(
               borderRadius: BorderRadius.circular(100),
               color: _getFrameBackgroundColor(),
               gradient: _getFrameGradient(),
               border: _SRBorder.all(color: srButtonBorder),
-              boxShadow: defaultBoxShadow,
+              boxShadow: srBoxShadow,
             )
           : BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              border: Border.all(color: const Color(0x1AFFFFFF), width: 1.5),
+              border: Border.all(color: srButtonDisabled, width: 1),
             );
       constraints = _constraints;
       padding = const EdgeInsets.symmetric(horizontal: _minHeight / 2);
@@ -225,99 +326,68 @@ class SRButton extends StatelessWidget {
     return Stack(
       children: [
         Padding(
-          padding: const EdgeInsets.all(1),
+          padding: const EdgeInsets.all(0.5),
           child: _buildFrame(child: child),
         ),
-        Positioned.fill(child: _TouchOverlay(onTap: onTap)),
+        Positioned.fill(
+          child: _TouchOverlay(onPress: onPress, onLongPress: onLongPress),
+        ),
       ],
     );
   }
 }
 
 class _TouchOverlay extends StatefulWidget {
-  final VoidCallback? onTap;
+  final VoidCallback? onPress;
+  final VoidCallback? onLongPress;
 
-  const _TouchOverlay({required this.onTap});
+  const _TouchOverlay({required this.onPress, this.onLongPress});
 
   @override
   State<_TouchOverlay> createState() => _TouchOverlayState();
 }
 
-class _TouchOverlayState extends State<_TouchOverlay> {
-  bool _touched = false;
+class _TouchOverlayState extends State<_TouchOverlay> with ClickableStateMixin {
+  @override
+  VoidCallback? get onPress => widget.onPress;
 
-  void _onTapDown() {
-    if (widget.onTap == null) {
-      return;
-    }
-    setState(() {
-      _touched = true;
-    });
-  }
-
-  void _onTapUp() {
-    if (widget.onTap == null) {
-      return;
-    }
-    setState(() {
-      _touched = false;
-    });
-  }
-
-  void _onTap() {
-    widget.onTap?.call();
-  }
-
-  // void _onGestureTapDown(TapDownDetails details) {
-  //   if (widget.onTapDown != null) {
-  //     widget.onTapDown?.call(details);
-  //   }
-  // }
-
-  // void _onLongPress() {
-  //   if (!widget.disabled && widget.onLongPress != null) {
-  //     _onHapticFeedback();
-  //     widget.onLongPress?.call();
-  //   }
-  // }
-
-  Widget _buildGesture() {
-    return GestureDetector(
-      onTap: _onTap,
-      // onTapDown: _onGestureTapDown,
-      // onLongPress: _onLongPress,
-      behavior: HitTestBehavior.opaque,
-    );
-  }
+  @override
+  VoidCallback? get onLongPress => widget.onLongPress;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: _touched ? 1 : 0,
-      duration: defaultAnimationDuration,
-      child: Container(
+    return SRInteractiveBuilder(
+      hoverEnabled: hasCallback,
+      touchEnabled: hasCallback,
+      builder: (context, hoverProgress, touchProgress) => Container(
         decoration: BoxDecoration(
-          color: const Color(0x33000000),
-          border: Border.all(color: Colors.white, width: 2),
+          color: Color.lerp(
+            const Color(0x00000000),
+            const Color(0x33000000),
+            touchProgress,
+          ),
+          border: Border.all(
+            color: Color.lerp(
+              const Color(0x00FFFFFF),
+              Colors.white,
+              max(touchProgress, hoverProgress),
+            )!,
+            width: 1,
+          ),
           borderRadius: BorderRadius.circular(100),
         ),
-        child: Listener(
-          onPointerDown: (v) => _onTapDown(),
-          onPointerUp: (v) => _onTapUp(),
-          onPointerCancel: (v) => _onTapUp(),
-          child: _buildGesture(),
-        ),
+        child: buildGestureDetector(),
       ),
     );
   }
 }
 
 class _SRBorder extends Border {
-  final double padding = 4.5;
+  final double padding = 2.5;
 
   factory _SRBorder.all({
     Color color = const Color(0xFF000000),
-    double width = 1.5,
+    double width = 1,
     BorderStyle style = BorderStyle.solid,
     double strokeAlign = BorderSide.strokeAlignInside,
   }) {
@@ -413,8 +483,7 @@ class _SRBorder extends Border {
     var angleBase = 5 * pi / 4;
     var halfAngle = asin((srButtonBorderNotchSize / 2) / radius);
     final Rect borderRect = rect.deflate(padding);
-    canvas.save();
-    canvas.translate(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    canvas.centerPivot(rect);
     canvas.rotate(-halfAngle * 3);
     canvas.drawOval(
       Rect.fromCenter(
@@ -430,7 +499,7 @@ class _SRBorder extends Border {
         ..moveTo(0, -borderRect.height / 2 + srButtonBorderDotRadius)
         ..arcTo(
           Rect.fromCenter(
-            center: Offset(0, 0),
+            center: const Offset(0, 0),
             width: radius * 2,
             height: radius * 2,
           ),
@@ -440,13 +509,8 @@ class _SRBorder extends Border {
         ),
       paint,
     );
-
-    canvas.translate(
-      -(rect.left + rect.width / 2),
-      -(rect.top + rect.height / 2),
-    );
     canvas.rotate(halfAngle - (2 * pi - angleBase));
-    canvas.restore();
+    canvas.resetPivot(rect);
   }
 
   static void _paintUniformBorderWithRectangle(

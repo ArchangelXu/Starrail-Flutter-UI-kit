@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>1</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="24" height="24"></rect>
+    </defs>
+    <g id="1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="编组">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="矩形"></g>
+            <g mask="url(#mask-2)" id="路径" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"
+               stroke-width="1.8">
+                <g transform="translate(4.000000, 1.500000)">
+                    <path d="M1,6.5 L1.87554,19.633 C1.94558,20.6836 2.81818,21.5 3.87111,21.5 L12.1289,21.5 C13.1818,21.5 14.0544,20.6836 14.1245,19.633 L15,6.5"></path>
+                    <path d="M5,3.5 L5.357,1.62578 C5.53667,0.68247 6.3614,0 7.3217,0 L8.6783,0 C9.6386,0 10.4633,0.68247 10.643,1.62578 L11,3.5"></path>
+                    <line x1="0" y1="3.5" x2="16" y2="3.5"></line>
+                    <line x1="6" y1="18.5" x2="6" y2="6.5"></line>
+                    <line x1="10" y1="18.5" x2="10" y2="6.5"></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
