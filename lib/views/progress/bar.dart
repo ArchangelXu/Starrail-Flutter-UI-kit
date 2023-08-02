@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:starrail_ui/theme/colors.dart';
 
-class SRProgressBar2 extends StatelessWidget {
+class SRProgressBar extends StatelessWidget {
   final double progress;
   final Color foregroundColor;
   final Color backgroundColor;
   final String Function(double progress)? labelBuilder;
 
-  SRProgressBar2({
+  SRProgressBar({
     super.key,
     required double progress,
     this.labelBuilder,

@@ -57,6 +57,8 @@ class _SRTabBarState extends State<SRTabBar> {
                   return [
                     AnimatedSize(
                       duration: srAnimationDuration,
+                      curve: srAnimationCurve,
+                      clipBehavior: Clip.none,
                       child: selected
                           ? _buildTab(e)
                           : AspectRatio(
@@ -178,6 +180,7 @@ class _Painter extends CustomPainter {
   final Color backgroundColor;
   final bool scroll;
   final Paint _paint = Paint();
+  final double _radius;
 
   _Painter({
     required this.progress,
@@ -187,7 +190,8 @@ class _Painter extends CustomPainter {
     Color? backgroundColor,
   })  : foregroundColor = foregroundColor ?? Colors.white,
         backgroundColor = backgroundColor ?? Colors.black,
-        padding = scroll ? 0 : _padding;
+        padding = scroll ? 0 : _padding,
+        _radius = scroll ? _selectedRadius : _unselectedRadius;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -208,7 +212,8 @@ class _Painter extends CustomPainter {
     );
     // draw unselected
     Rect drawRect;
-    var curvedProgress = srAnimationCurve.transform(progress);
+    // var curvedProgress = srAnimationCurve.transform(progress);
+    var curvedProgress = progress;
     if (curvedProgress < 1) {
       drawRect =
           Rect.fromLTRB(padding, padding, rect.width - padding, rect.height);
@@ -216,8 +221,8 @@ class _Painter extends CustomPainter {
       _paint.color = backgroundColor;
       var rRect = RRect.fromRectAndCorners(
         drawRect,
-        topLeft: const Radius.circular(_unselectedRadius),
-        topRight: const Radius.circular(_unselectedRadius),
+        topLeft: Radius.circular(_radius),
+        topRight: Radius.circular(_radius),
       );
       _drawShadow(canvas, rRect);
       canvas.drawRRect(rRect, _paint);
@@ -240,13 +245,17 @@ class _Painter extends CustomPainter {
           foregroundColor,
           curvedProgress,
         )!;
-        _drawShadow(canvas, rRect);
+        if (curvedProgress == 1) {
+          _drawShadow(canvas, rRect);
+        }
         canvas.drawRRect(rRect, _paint);
       } else {
         canvas.save();
         canvas.translate(0, rect.height * (1 - curvedProgress));
         _paint.color = foregroundColor;
-        _drawShadow(canvas, rRect);
+        if (curvedProgress == 1) {
+          _drawShadow(canvas, rRect);
+        }
         canvas.drawRRect(rRect, _paint);
         canvas.restore();
       }

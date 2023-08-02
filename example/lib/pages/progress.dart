@@ -147,7 +147,7 @@ class _ProgressPageState extends State<ProgressPage> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: SRProgressBar2(
+                    child: SRProgressBar(
                       progress: _progressValue,
                       labelBuilder: (progress) =>
                           sprintf("%.2f%% Completed", [progress * 100]),

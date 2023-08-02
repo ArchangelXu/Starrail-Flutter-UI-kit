@@ -69,6 +69,12 @@ class DialogPage extends StatelessWidget {
               onPress: () => _showCustomDialog(context),
             ),
             const SizedBox(height: 16),
+            SRButton.text(
+              text: "SRDialog.loading",
+              expanded: true,
+              onPress: () => SRDialog.showLoading(context: context),
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),

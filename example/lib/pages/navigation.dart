@@ -99,20 +99,32 @@ class _NavigationPageState extends State<NavigationPage>
           ),
         ],
       ),
-      bottomNavigationBar: SRNavigationBar.auto(
-        context: context,
-        direction: Axis.horizontal,
-        // scroll: true,
-        onChanged: (value) {
-          setState(() {
-            _tabIndex = value;
-          });
-        },
-        icons: icons
-            .map(
-              (e) => SRIcon(iconData: e),
-            )
-            .toList(),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Text(
+              "Navigation bar",
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SRNavigationBar.auto(
+            context: context,
+            direction: Axis.horizontal,
+            // scroll: true,
+            onChanged: (value) {
+              setState(() {
+                _tabIndex = value;
+              });
+            },
+            icons: icons.map((e) => SRIcon(iconData: e)).toList(),
+          ),
+        ],
       ),
     );
   }

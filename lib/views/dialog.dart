@@ -7,6 +7,7 @@ import 'package:starrail_ui/theme/dimens.dart';
 import 'package:starrail_ui/views/buttons/close.dart';
 import 'package:starrail_ui/views/card.dart';
 import 'package:starrail_ui/views/misc/scroll.dart';
+import 'package:starrail_ui/views/progress/circular.dart';
 
 class SRDialog extends StatelessWidget {
   final Widget child;
@@ -36,10 +37,19 @@ class SRDialog extends StatelessWidget {
     );
   }
 
+  static void showLoading({
+    required BuildContext context,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => Center(child: SRLoading()),
+    );
+  }
+
   static Future<T?> _showBlurBackgroundDialog<T>({
     required BuildContext context,
     bool allowDismiss = true,
-    required SRDialog Function(BuildContext context) builder,
+    required Widget Function(BuildContext context) builder,
   }) {
     //use WillPopScope to prevent dismiss dialog by pressing
     //back button on Android devices
