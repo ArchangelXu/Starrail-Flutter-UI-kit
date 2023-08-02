@@ -98,7 +98,10 @@ class _SRTextFieldState extends State<SRTextField> {
         cursorHeight: srTextFieldFontSize,
         maxLength: widget.maxLength,
         maxLines: widget.maxLines,
-        style: const TextStyle(fontSize: srTextFieldFontSize),
+        style: TextStyle(
+          fontSize: srTextFieldFontSize,
+          color: enabled ? null : srButtonDisabled,
+        ),
         decoration: InputDecoration(
           suffixIconConstraints:
               const BoxConstraints(maxWidth: 30, maxHeight: 30),

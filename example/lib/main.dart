@@ -9,6 +9,8 @@ import 'package:example/pages/selectable.dart';
 import 'package:example/util.dart';
 import 'package:flutter/material.dart';
 import 'package:starrail_ui/views/buttons/normal.dart';
+import 'package:starrail_ui/views/misc/icon.dart';
+import 'package:starrail_ui/views/selectable/tabs.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,7 +37,9 @@ class MyApp extends StatelessWidget {
           darkTheme: themeData.copyWith(
             brightness: Brightness.dark,
             colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.deepPurple, brightness: Brightness.dark),
+              seedColor: Colors.deepPurple,
+              brightness: Brightness.dark,
+            ),
           ),
           themeMode: value ? ThemeMode.light : ThemeMode.dark,
           title: 'Starrail UI Kit Demo',
@@ -67,12 +71,36 @@ class DemoPageState extends State<DemoPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   final List<_PageInfo> _pages = <_PageInfo>[
-    _PageInfo("button", const ButtonPage()),
-    _PageInfo("input", const InputPage()),
-    _PageInfo("selectable", const SelectablePage()),
-    _PageInfo("progress", const ProgressPage()),
-    _PageInfo("dialog", const DialogPage()),
-    _PageInfo("navigation", const NavigationPage()),
+    _PageInfo(
+      title: "button",
+      icon: Icons.smart_button_rounded,
+      page: const ButtonPage(),
+    ),
+    _PageInfo(
+      title: "input",
+      icon: Icons.text_fields_rounded,
+      page: const InputPage(),
+    ),
+    _PageInfo(
+      title: "selectable",
+      icon: Icons.check_box_outlined,
+      page: const SelectablePage(),
+    ),
+    _PageInfo(
+      title: "progress",
+      icon: Icons.tune_rounded,
+      page: const ProgressPage(),
+    ),
+    _PageInfo(
+      title: "dialog",
+      icon: Icons.feedback_rounded,
+      page: const DialogPage(),
+    ),
+    _PageInfo(
+      title: "navigation",
+      icon: Icons.anchor_rounded,
+      page: const NavigationPage(),
+    ),
   ];
 
   @override
@@ -89,14 +117,26 @@ class DemoPageState extends State<DemoPage>
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: colorScheme.primaryContainer,
         title: const Text('UI Kit Demo'),
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorSize: TabBarIndicatorSize.label,
-          isScrollable: true,
-          tabs: _pages.map((e) => Tab(text: e.title.capitalize())).toList(),
+        bottom: SRTabBar(
+          tabController: _tabController,
+          scroll: true,
+          items: _pages
+              .map(
+                (e) => SRTabBarItem(
+                  title: e.title.capitalize(),
+                  icon: SRIcon(iconData: e.icon),
+                ),
+              )
+              .toList(),
+          selectedBackgroundColor: colorScheme.surface,
+          unselectedBackgroundColor: colorScheme.inverseSurface,
+          selectedForegroundColor: colorScheme.primary,
+          unselectedForegroundColor: colorScheme.inversePrimary,
         ),
         actions: [
           ValueListenableBuilder(
@@ -108,9 +148,9 @@ class DemoPageState extends State<DemoPage>
               onPress: () {
                 setState(() {
                   globalBrightnessLight2.value = !globalBrightnessLight2.value;
-                });
-              },
-            ),
+                    });
+                  },
+                ),
           ),
           const SizedBox(
             width: 48,
@@ -127,7 +167,12 @@ class DemoPageState extends State<DemoPage>
 
 class _PageInfo {
   final String title;
+  final IconData icon;
   final Widget page;
 
-  _PageInfo(this.title, this.page);
+  _PageInfo({
+    required this.title,
+    required this.page,
+    required this.icon,
+  });
 }

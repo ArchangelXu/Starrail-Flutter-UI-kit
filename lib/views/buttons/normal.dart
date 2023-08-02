@@ -22,7 +22,6 @@ enum SRButtonHighlightType {
 class SRButton extends StatelessWidget {
   static const double _minHeight = 32;
   static const double _circularMinSize = 26;
-  static const double _iconSize = 14;
   static const _constraints = BoxConstraints(
     minWidth: _minHeight * 3,
     minHeight: _minHeight,

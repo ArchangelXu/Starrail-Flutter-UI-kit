@@ -108,4 +108,20 @@ class SRIcon extends StatelessWidget {
       iconData: iconData,
     );
   }
+
+  SRIcon copyWith({
+    Widget? child,
+    String? iconPath,
+    IconData? iconData,
+    Color? color,
+    double? size,
+  }) {
+    return SRIcon(
+      iconPath: iconPath ?? this.iconPath,
+      iconData: iconData ?? this.iconData,
+      color: color ?? this.color,
+      size: size ?? this.size,
+      child: child ?? this.child,
+    );
+  }
 }

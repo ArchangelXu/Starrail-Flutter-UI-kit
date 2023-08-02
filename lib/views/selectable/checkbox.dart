@@ -2,18 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:starrail_ui/theme/colors.dart';
 
 class SRCheckbox extends StatelessWidget {
+  static const double _borderWidth = 1;
   final bool checked;
-  final Color backgroundSelectedColor;
   final Color tickColor;
   final Color borderColor;
-
+  final Color backgroundSelectedColor;
   final Color backgroundUnselectedColor;
   final ValueChanged<bool?>? onChanged;
+
+  factory SRCheckbox.auto({
+    Key? key,
+    required BuildContext context,
+    required bool checked,
+    ValueChanged<bool?>? onChanged,
+  }) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? SRCheckbox.dark(
+            key: key,
+            checked: checked,
+            onChanged: onChanged,
+          )
+        : SRCheckbox.light(
+            key: key,
+            checked: checked,
+            onChanged: onChanged,
+          );
+  }
 
   factory SRCheckbox.light({
     Key? key,
     required bool checked,
-    required ValueChanged<bool?>? onChanged,
+    ValueChanged<bool?>? onChanged,
   }) {
     return SRCheckbox._internal(
       key: key,
@@ -29,7 +48,7 @@ class SRCheckbox extends StatelessWidget {
   factory SRCheckbox.dark({
     Key? key,
     required bool checked,
-    required ValueChanged<bool?>? onChanged,
+    ValueChanged<bool?>? onChanged,
   }) {
     return SRCheckbox._internal(
       key: key,
@@ -54,10 +73,12 @@ class SRCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var checkbox = Checkbox(
+    return Checkbox(
       overlayColor: MaterialStateProperty.all(Colors.transparent),
-      // fillColor: MaterialStateProperty.all(backgroundSelectedColor),
       fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.disabled)) {
+          return srCheckboxDisabled;
+        }
         return states.intersection({
           MaterialState.pressed,
           MaterialState.hovered,
@@ -68,20 +89,20 @@ class SRCheckbox extends StatelessWidget {
       }),
       checkColor: tickColor,
       side: MaterialStateBorderSide.resolveWith((states) {
-        return states.intersection({
-          MaterialState.hovered,
-        }).isNotEmpty
-            ? const BorderSide(color: srHighlighted, width: 0.5)
-            : BorderSide(color: borderColor, width: 0.5);
+        if (states.contains(MaterialState.disabled)) {
+          return const BorderSide(
+              color: srCheckboxDisabled, width: _borderWidth);
+        }
+        return states.contains(MaterialState.hovered) &&
+                !states.contains(MaterialState.selected)
+            ? const BorderSide(color: srHighlighted, width: _borderWidth)
+            : BorderSide(color: borderColor, width: _borderWidth);
       }),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
       ),
       value: checked,
-      onChanged: (value) {
-        onChanged?.call(value);
-      },
+      onChanged: onChanged,
     );
-    return checkbox;
   }
 }

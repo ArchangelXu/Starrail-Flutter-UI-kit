@@ -61,6 +61,79 @@ class _SRLoopAnimatedBuilderState extends State<SRLoopAnimatedBuilder>
   }
 }
 
+class SRSelectionAnimatedBuilder extends StatefulWidget {
+  final Widget? child;
+  final Widget Function(BuildContext context, double value, Widget? child)
+      builder;
+  final bool selected;
+  final Duration duration;
+  final bool hasReverseAnimation;
+
+  const SRSelectionAnimatedBuilder({
+    super.key,
+    required this.selected,
+    required this.builder,
+    this.hasReverseAnimation = true,
+    this.duration = srAnimationDuration,
+    this.child,
+  });
+
+  @override
+  State<SRSelectionAnimatedBuilder> createState() =>
+      _SRSelectionAnimatedBuilderState();
+}
+
+class _SRSelectionAnimatedBuilderState extends State<SRSelectionAnimatedBuilder>
+    with TickerProviderStateMixin {
+  late final Animation<double> _animation;
+  late final AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController =
+        AnimationController(duration: widget.duration, vsync: this);
+    _animation = Tween(begin: 0.0, end: 1.0).animate(_animationController);
+    _updateSelectionController();
+  }
+
+  @override
+  void didUpdateWidget(covariant SRSelectionAnimatedBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updateSelectionController();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _updateSelectionController() {
+    if (widget.selected) {
+      _animationController.forward();
+    } else {
+      if (widget.hasReverseAnimation) {
+        _animationController.reverse();
+      } else {
+        _animationController.reset();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (BuildContext context, Widget? child) => widget.builder(
+        context,
+        _animation.value,
+        widget.child,
+      ),
+    );
+  }
+}
+
 class SRInteractiveBuilder extends StatefulWidget {
   final bool hoverEnabled;
   final bool touchEnabled;

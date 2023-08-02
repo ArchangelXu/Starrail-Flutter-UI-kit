@@ -29,3 +29,7 @@ const double srSliderLabelSize = 10;
 //region text field
 const double srTextFieldFontSize = 12;
 //endregion
+
+//region tab
+const double srTabContentTitle = 12;
+//endregion

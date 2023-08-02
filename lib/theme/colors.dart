@@ -33,6 +33,7 @@ const Color srSliderNotFilled = Color(0x1A000000);
 //endregion
 
 //region progress bar
+// const Color srProgressBarForeground = Color(0x80F8D176);
 const Color srProgressBarForeground = Color(0xFF9D8563);
 const Color srProgressBarBackground = Colors.black;
 //endregion
@@ -60,11 +61,19 @@ const Color srNavigationBarItemSelectedBackgroundDark = Color(0xFFFFFFFF);
 const Color srNavigationBarItemBorderDark = Color(0xF2FFFFFF);
 const Color srNavigationBarItemIconSelectedDark = Color(0xFF000000);
 //endregion
+
 //region checkbox
 const Color srCheckboxBackgroundSelected = srHighlighted;
+const Color srCheckboxDisabled = Color(0x4D999999);
 const Color srCheckboxTick = Color(0xFFFFFFFF);
 const Color srCheckboxBorderLight = Color(0x80000000);
 const Color srCheckboxBackgroundUnselectedLight = Color(0x33000000);
 const Color srCheckboxBorderDark = Color(0x80FFFFFF);
 const Color srCheckboxBackgroundUnselectedDark = Color(0x33FFFFFF);
+//endregion
+
+//region tab
+const Color srTabForegroundSelected = Color(0xF2000000);
+const Color srTabForegroundUnselected = Color(0xBFFFFFFF);
+const Color srTabBorder = Color(0x4D999999);
 //endregion

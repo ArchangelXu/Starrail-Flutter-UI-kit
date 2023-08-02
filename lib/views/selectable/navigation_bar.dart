@@ -17,7 +17,7 @@ class SRNavigationBar extends StatefulWidget {
   final double spacing;
   final int initialSelectedIndex;
   final ValueChanged<int>? onChanged;
-  final List<SRIcon Function(Color color, double size)> iconBuilders;
+  final List<SRIcon> icons;
 
   factory SRNavigationBar.auto({
     Key? key,
@@ -27,28 +27,28 @@ class SRNavigationBar extends StatefulWidget {
     double? spacing,
     double? thickness,
     int? initialSelectedIndex,
-    required List<SRIcon Function(Color color, double size)> iconBuilders,
+    required List<SRIcon> icons,
     ValueChanged<int>? onChanged,
   }) {
     return Theme.of(context).brightness == Brightness.dark
         ? SRNavigationBar.dark(
-            key: key,
+      key: key,
             scroll: scroll,
             direction: direction,
             spacing: spacing,
             thickness: thickness,
             initialSelectedIndex: initialSelectedIndex,
-            iconBuilders: iconBuilders,
+            icons: icons,
             onChanged: onChanged,
           )
         : SRNavigationBar.light(
-            key: key,
+      key: key,
             scroll: scroll,
             direction: direction,
             spacing: spacing,
             thickness: thickness,
             initialSelectedIndex: initialSelectedIndex,
-            iconBuilders: iconBuilders,
+            icons: icons,
             onChanged: onChanged,
           );
   }
@@ -59,7 +59,7 @@ class SRNavigationBar extends StatefulWidget {
     double? spacing,
     double? thickness,
     required Axis direction,
-    required List<SRIcon Function(Color color, double size)> iconBuilders,
+    required List<SRIcon> icons,
     ValueChanged<int>? onChanged,
     int? initialSelectedIndex,
   }) {
@@ -71,7 +71,7 @@ class SRNavigationBar extends StatefulWidget {
       thickness: thickness ?? _thickness,
       dark: false,
       initialSelectedIndex: initialSelectedIndex ?? 0,
-      iconBuilders: iconBuilders,
+      icons: icons,
       onChanged: onChanged,
     );
   }
@@ -82,7 +82,7 @@ class SRNavigationBar extends StatefulWidget {
     double? spacing,
     double? thickness,
     required Axis direction,
-    required List<SRIcon Function(Color color, double size)> iconBuilders,
+    required List<SRIcon> icons,
     ValueChanged<int>? onChanged,
     int? initialSelectedIndex,
   }) {
@@ -94,7 +94,7 @@ class SRNavigationBar extends StatefulWidget {
       thickness: thickness ?? _thickness,
       dark: true,
       initialSelectedIndex: initialSelectedIndex ?? 0,
-      iconBuilders: iconBuilders,
+      icons: icons,
       onChanged: onChanged,
     );
   }
@@ -106,7 +106,7 @@ class SRNavigationBar extends StatefulWidget {
     required this.dark,
     required this.thickness,
     required this.spacing,
-    required this.iconBuilders,
+    required this.icons,
     required this.initialSelectedIndex,
     this.onChanged,
   });
@@ -138,13 +138,13 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
   }
 
   List<Widget> _buildItems() {
-    return widget.iconBuilders.map(
+    return widget.icons.map(
       (e) {
-        var index = widget.iconBuilders.indexOf(e);
+        var index = widget.icons.indexOf(e);
         if (widget.dark) {
           return SRNavigationBarItem.dark(
             selected: index == _selectedIndex,
-            iconBuilder: e,
+            icon: e,
             onPress: () {
               setState(() {
                 _selectedIndex = index;
@@ -155,7 +155,7 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
         } else {
           return SRNavigationBarItem.light(
             selected: index == _selectedIndex,
-            iconBuilder: e,
+            icon: e,
             onPress: () {
               setState(() {
                 _selectedIndex = index;
@@ -169,14 +169,14 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
   }
 
   List<Widget> _buildCutoutItems() {
-    double lineThickness = 1;
+    double lineThickness = SRNavigationBar._lineThickness;
     double itemSize = _SRNavigationBarItemState._size;
-    return widget.iconBuilders
+    return widget.icons
         .map(
           (e) => SizedBox.square(
             dimension: itemSize,
             child: Padding(
-              padding: EdgeInsets.all(_SRNavigationBarItemState._padding),
+              padding: const EdgeInsets.all(_SRNavigationBarItemState._padding),
               child: Center(
                 child: Container(
                   // must not be transparent
@@ -279,7 +279,7 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
 class SRNavigationBarItem extends StatefulWidget {
   final bool selected;
   final VoidCallback? onPress;
-  final SRIcon Function(Color color, double size) iconBuilder;
+  final SRIcon icon;
 
   final Color unselectedBackgroundColor;
   final Color selectedBackgroundColor;
@@ -292,20 +292,20 @@ class SRNavigationBarItem extends StatefulWidget {
     required BuildContext context,
     required bool selected,
     VoidCallback? onPress,
-    required SRIcon Function(Color color, double size) iconBuilder,
+    required SRIcon icon,
   }) {
     return Theme.of(context).brightness == Brightness.dark
         ? SRNavigationBarItem.dark(
-            key: key,
+      key: key,
             selected: selected,
             onPress: onPress,
-            iconBuilder: iconBuilder,
+            icon: icon,
           )
         : SRNavigationBarItem.light(
-            key: key,
+      key: key,
             selected: selected,
             onPress: onPress,
-            iconBuilder: iconBuilder,
+            icon: icon,
           );
   }
 
@@ -313,12 +313,12 @@ class SRNavigationBarItem extends StatefulWidget {
     Key? key,
     required bool selected,
     VoidCallback? onPress,
-    required SRIcon Function(Color color, double size) iconBuilder,
+    required SRIcon icon,
   }) {
     return SRNavigationBarItem(
       selected: selected,
       onPress: onPress,
-      iconBuilder: iconBuilder,
+      icon: icon,
       unselectedBackgroundColor: srNavigationBarItemUnselectedBackgroundLight,
       selectedBackgroundColor: srNavigationBarItemSelectedBackgroundLight,
       borderColor: srNavigationBarItemBorderLight,
@@ -331,12 +331,12 @@ class SRNavigationBarItem extends StatefulWidget {
     Key? key,
     required bool selected,
     VoidCallback? onPress,
-    required SRIcon Function(Color color, double size) iconBuilder,
+    required SRIcon icon,
   }) {
     return SRNavigationBarItem(
       selected: selected,
       onPress: onPress,
-      iconBuilder: iconBuilder,
+      icon: icon,
       unselectedBackgroundColor: srNavigationBarItemUnselectedBackgroundDark,
       selectedBackgroundColor: srNavigationBarItemSelectedBackgroundDark,
       borderColor: srNavigationBarItemBorderDark,
@@ -347,7 +347,7 @@ class SRNavigationBarItem extends StatefulWidget {
 
   const SRNavigationBarItem({
     super.key,
-    required this.iconBuilder,
+    required this.icon,
     required this.selected,
     required this.unselectedBackgroundColor,
     required this.selectedBackgroundColor,
@@ -365,44 +365,12 @@ class _SRNavigationBarItemState extends State<SRNavigationBarItem>
     with SingleTickerProviderStateMixin, ClickableStateMixin {
   static const double _size = 48;
   static const double _padding = _size / 8;
-  late final Animation<double> _selectionAnimation;
-  late final AnimationController _selectionAnimationController;
 
   @override
   VoidCallback? get onLongPress => null;
 
   @override
   VoidCallback? get onPress => widget.onPress;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectionAnimationController =
-        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
-    _selectionAnimation =
-        Tween(begin: 0.0, end: 1.0).animate(_selectionAnimationController);
-    _updateSelectionController();
-  }
-
-  @override
-  void dispose() {
-    _selectionAnimationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant SRNavigationBarItem oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _updateSelectionController();
-  }
-
-  void _updateSelectionController() {
-    if (widget.selected) {
-      _selectionAnimationController.forward();
-    } else {
-      _selectionAnimationController.reset();
-    }
-  }
 
   // SRLoopAnimatedBuilder _buildSpinning() {
   //   return SRLoopAnimatedBuilder(
@@ -426,12 +394,14 @@ class _SRNavigationBarItemState extends State<SRNavigationBarItem>
           builder: (context, value) {
             return Transform.rotate(
               angle: 2 * pi * value,
-              child: AnimatedBuilder(
-                animation: _selectionAnimation,
-                builder: (BuildContext context, Widget? child) {
+              child: SRSelectionAnimatedBuilder(
+                selected: widget.selected,
+                hasReverseAnimation: false,
+                duration: const Duration(milliseconds: 300),
+                builder: (context, selectionProgress, child) {
                   return CustomPaint(
                     painter: _BarItemPainter(
-                      progress: _selectionAnimationController.value,
+                      progress: selectionProgress,
                       hoverProgress: hoverProgress,
                       touchProgress: touchProgress,
                       padding: _padding,
@@ -457,7 +427,7 @@ class _SRNavigationBarItemState extends State<SRNavigationBarItem>
         widget.selected ? widget.selectedIconColor : widget.unselectedIconColor;
     return Positioned.fill(
       child: IgnorePointer(
-        child: widget.iconBuilder.call(color, _size / 2),
+        child: widget.icon.copyWith(color: color, size: _size / 2),
       ),
     );
   }

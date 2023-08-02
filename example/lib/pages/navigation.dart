@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:starrail_ui/views/misc/icon.dart';
-import 'package:starrail_ui/views/selectable/navigation.dart';
+import 'package:starrail_ui/views/selectable/navigation_bar.dart';
+import 'package:starrail_ui/views/selectable/tabs.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -9,7 +13,10 @@ class NavigationPage extends StatefulWidget {
   State<NavigationPage> createState() => _NavigationPageState();
 }
 
-class _NavigationPageState extends State<NavigationPage> {
+class _NavigationPageState extends State<NavigationPage>
+    with SingleTickerProviderStateMixin {
+  static const _tabCount = 3;
+  late final TabController _tabController;
   final List<Widget> _pages = List.generate(6, (index) => index)
       .map(
         (e) => _SubPage(
@@ -18,15 +25,79 @@ class _NavigationPageState extends State<NavigationPage> {
       )
       .toList();
   int _tabIndex = 0;
+  final icons = [
+    Icons.image_rounded,
+    Icons.volume_down_rounded,
+    Icons.notifications_rounded,
+    Icons.perm_contact_cal,
+    Icons.extension_rounded,
+    Icons.settings,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _tabCount, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       extendBody: true,
-      body: IndexedStack(
-        index: _tabIndex,
-        children: _pages,
+      body: Column(
+        children: [
+          Container(
+            color: const Color(0xFF313131),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    "Tabs",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: SRTabBar(
+                    items: icons
+                        .take(_tabCount)
+                        .map(
+                          (e) => SRTabBarItem(
+                            title: lorem(
+                              paragraphs: 1,
+                              words: 1 + Random().nextInt(1),
+                            ),
+                            icon: SRIcon(iconData: e),
+                          ),
+                        )
+                        .toList(),
+                    tabController: _tabController,
+                  ),
+                ),
+                Container(color: Colors.white, height: 4),
+              ],
+            ),
+          ),
+          Expanded(
+            child: IndexedStack(
+              index: _tabIndex,
+              children: _pages,
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: SRNavigationBar.auto(
         context: context,
@@ -37,20 +108,9 @@ class _NavigationPageState extends State<NavigationPage> {
             _tabIndex = value;
           });
         },
-        iconBuilders: [
-          Icons.image_rounded,
-          Icons.volume_down_rounded,
-          Icons.notifications_rounded,
-          Icons.perm_contact_cal,
-          Icons.extension_rounded,
-          Icons.settings,
-        ]
+        icons: icons
             .map(
-              (e) => (color, size) => SRIcon(
-                    iconData: e,
-                    color: color,
-                    size: size,
-                  ),
+              (e) => SRIcon(iconData: e),
             )
             .toList(),
       ),

@@ -32,8 +32,8 @@ class _SRCloseButtonState extends State<SRCloseButton>
         builder: (context, hoverProgress, touchProgress) => CustomPaint(
           painter: _Painter(
             color: widget.color,
-            scaleProgress: max(hoverProgress, touchProgress),
-            colorProgress: touchProgress,
+            hoverProgress: hoverProgress,
+            touchProgress: touchProgress,
             strokeWidth: widget.strokeWidth,
           ),
           child: buildGestureDetector(),
@@ -46,8 +46,9 @@ class _SRCloseButtonState extends State<SRCloseButton>
 class _Painter extends CustomPainter {
   static const _centerOvalRadius = 1.5;
   static const _centerOvalSpacing = 4.0;
-  final double scaleProgress;
-  final double colorProgress;
+  static const _range = -0.5;
+  final double hoverProgress;
+  final double touchProgress;
   final double strokeWidth;
   final Paint p = Paint();
   late final double _distance;
@@ -55,12 +56,12 @@ class _Painter extends CustomPainter {
   _Painter({
     Color? color,
     Color pressedColor = srHighlighted,
-    required this.scaleProgress,
-    required this.colorProgress,
+    required this.hoverProgress,
+    required this.touchProgress,
     required this.strokeWidth,
   }) {
     p.style = PaintingStyle.stroke;
-    p.color = Color.lerp(color ?? Colors.black, pressedColor, colorProgress)!;
+    p.color = Color.lerp(color ?? Colors.black, pressedColor, touchProgress)!;
     p.strokeWidth = strokeWidth;
     _distance = sqrt(_centerOvalRadius + _centerOvalSpacing);
   }
@@ -70,26 +71,33 @@ class _Painter extends CustomPainter {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.centerPivot(rect);
     p.style = PaintingStyle.stroke;
+    var interactiveProgress =
+        (_range * hoverProgress - 1) * (1 - touchProgress);
+    var translate = _distance * interactiveProgress;
+    var scale = -interactiveProgress;
     for (int i = 0; i < 4; i++) {
       canvas.drawLine(
+        //start (center)
         Offset(
-          0 - _distance * (1 - scaleProgress),
-          0 - _distance * (1 - scaleProgress),
+          0 + translate,
+          0 + translate,
         ),
+        //end (edge)
         Offset(
-          -rect.width / 2 + _distance * scaleProgress,
-          -rect.height / 2 + _distance * scaleProgress,
+          -rect.width / 2 + translate,
+          -rect.height / 2 + translate,
         ),
         p,
       );
       canvas.rotate(pi / 2);
     }
     p.style = PaintingStyle.fill;
+    var size2 = _centerOvalRadius * 2 * scale;
     canvas.drawOval(
       Rect.fromCenter(
         center: const Offset(0, 0),
-        width: _centerOvalRadius * 2,
-        height: _centerOvalRadius * 2,
+        width: size2,
+        height: size2,
       ),
       p,
     );
@@ -99,7 +107,7 @@ class _Painter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return oldDelegate is! _Painter ||
-        oldDelegate.scaleProgress != scaleProgress ||
-        oldDelegate.colorProgress != colorProgress;
+        oldDelegate.hoverProgress != hoverProgress ||
+        oldDelegate.touchProgress != touchProgress;
   }
 }
