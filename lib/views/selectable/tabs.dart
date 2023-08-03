@@ -215,8 +215,8 @@ class _Painter extends CustomPainter {
     // var curvedProgress = srAnimationCurve.transform(progress);
     var curvedProgress = progress;
     if (curvedProgress < 1) {
-      drawRect =
-          Rect.fromLTRB(padding, padding, rect.width - padding, rect.height);
+      drawRect = Rect.fromLTRB(
+          padding, padding - _borderWidth, rect.width - padding, rect.height);
       _paint.style = PaintingStyle.fill;
       _paint.color = backgroundColor;
       var rRect = RRect.fromRectAndCorners(
@@ -224,12 +224,15 @@ class _Painter extends CustomPainter {
         topLeft: Radius.circular(_radius),
         topRight: Radius.circular(_radius),
       );
+      canvas.save();
+      canvas.translate(0, _borderWidth);
       _drawShadow(canvas, rRect);
       canvas.drawRRect(rRect, _paint);
       _paint.style = PaintingStyle.stroke;
       _paint.color = srHighlighted.withOpacity(0.25);
       _paint.strokeWidth = _borderWidth;
       canvas.drawRRect(rRect, _paint);
+      canvas.restore();
     }
     // draw selected
     var rRect = RRect.fromRectAndCorners(

@@ -48,48 +48,50 @@ class _NavigationPageState extends State<NavigationPage>
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: colorScheme.surface,
       extendBody: true,
       body: Column(
         children: [
-          Container(
-            color: const Color(0xFF313131),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    "Tabs",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  "Tabs",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: colorScheme.onSurface,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: SRTabBar(
-                    items: icons
-                        .take(_tabCount)
-                        .map(
-                          (e) => SRTabBarItem(
-                            title: lorem(
-                              paragraphs: 1,
-                              words: 1 + Random().nextInt(1),
-                            ),
-                            icon: SRIcon(iconData: e),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: SRTabBar(
+                  tabController: _tabController,
+                  selectedBackgroundColor: colorScheme.inverseSurface,
+                  unselectedBackgroundColor: colorScheme.surface,
+                  selectedForegroundColor: colorScheme.inversePrimary,
+                  unselectedForegroundColor: colorScheme.primary,
+                  items: icons
+                      .take(_tabCount)
+                      .map(
+                        (e) => SRTabBarItem(
+                          title: lorem(
+                            paragraphs: 1,
+                            words: 1 + Random().nextInt(1),
                           ),
-                        )
-                        .toList(),
-                    tabController: _tabController,
-                  ),
+                          icon: SRIcon(iconData: e),
+                        ),
+                      )
+                      .toList(),
                 ),
-                Container(color: Colors.white, height: 4),
-              ],
-            ),
+              ),
+              Container(color: Colors.white, height: 4),
+            ],
           ),
           Expanded(
             child: IndexedStack(

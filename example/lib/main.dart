@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:example/pages/buttons.dart';
+import 'package:example/pages/conversation.dart';
 import 'package:example/pages/dialog.dart';
 import 'package:example/pages/input.dart';
 import 'package:example/pages/navigation.dart';
@@ -101,6 +102,11 @@ class DemoPageState extends State<DemoPage>
       icon: Icons.anchor_rounded,
       page: const NavigationPage(),
     ),
+    _PageInfo(
+      title: "conversation",
+      icon: Icons.forum_rounded,
+      page: const ConversationPage(),
+    ),
   ];
 
   @override
@@ -148,9 +154,9 @@ class DemoPageState extends State<DemoPage>
               onPress: () {
                 setState(() {
                   globalBrightnessLight2.value = !globalBrightnessLight2.value;
-                    });
-                  },
-                ),
+                });
+              },
+            ),
           ),
           const SizedBox(
             width: 48,

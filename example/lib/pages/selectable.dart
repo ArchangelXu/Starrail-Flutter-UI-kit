@@ -90,7 +90,7 @@ class _SelectablePageState extends State<SelectablePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
             Text(
               "Radio",
               textAlign: TextAlign.start,
@@ -171,13 +171,7 @@ class _SelectablePageState extends State<SelectablePage> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 80),
-          child: Text(
-            title,
-            style: textStyle,
-          ),
-        ),
+        Expanded(child: Text(title, style: textStyle)),
         checkbox,
       ],
     );
@@ -221,13 +215,7 @@ class _SelectablePageState extends State<SelectablePage> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 80),
-          child: Text(
-            title,
-            style: textStyle,
-          ),
-        ),
+        Expanded(child: Text(title, style: textStyle)),
         radio,
       ],
     );

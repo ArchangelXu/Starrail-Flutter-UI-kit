@@ -7,31 +7,49 @@ class ButtonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: colorScheme.surface,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                "Text buttons",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ),
             SRButton.text(
-              text: "SRButton.text",
+              text: "Normal",
               onPress: () => showSnackBar(context, "tap"),
             ),
             const SizedBox(height: 16),
             SRButton.text(
-              text: "SRButton onTap=null",
+              expanded: true,
+              text: "Expanded",
+              onPress: () => showSnackBar(context, "tap"),
+            ),
+            const SizedBox(height: 16),
+            SRButton.text(
+              text: "Disabled",
               // onTap: () => showSnackBar(context, "tap2"),
             ),
             const SizedBox(height: 16),
             SRButton.text(
-              text: "SRButton highlighted",
+              text: "Highlighted",
               highlightType: SRButtonHighlightType.highlighted,
               onPress: () => showSnackBar(context, "tap"),
             ),
             const SizedBox(height: 16),
             SRButton.text(
-              text: "SRButton highlighted plus",
+              text: "Highlighted Plus",
               highlightType: SRButtonHighlightType.highlightedPlus,
               onPress: () => showSnackBar(context, "tap"),
             ),
@@ -40,7 +58,6 @@ class ButtonPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: SRButton.custom(
-                    expanded: true,
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -50,7 +67,7 @@ class ButtonPage extends StatelessWidget {
                           color: Colors.red,
                         ),
                         SizedBox(width: 8),
-                        Text("SRButton with custom child"),
+                        Text("Custom child"),
                         SizedBox(width: 8),
                       ],
                     ),
@@ -59,10 +76,20 @@ class ButtonPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                "Icon buttons",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ),
             Row(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SRButton.circular(
                   child: const Text("A"),

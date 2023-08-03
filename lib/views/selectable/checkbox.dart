@@ -91,7 +91,9 @@ class SRCheckbox extends StatelessWidget {
       side: MaterialStateBorderSide.resolveWith((states) {
         if (states.contains(MaterialState.disabled)) {
           return const BorderSide(
-              color: srCheckboxDisabled, width: _borderWidth);
+            color: srCheckboxDisabled,
+            width: _borderWidth,
+          );
         }
         return states.contains(MaterialState.hovered) &&
                 !states.contains(MaterialState.selected)

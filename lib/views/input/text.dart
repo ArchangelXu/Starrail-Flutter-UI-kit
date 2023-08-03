@@ -48,7 +48,7 @@ class _SRTextFieldState extends State<SRTextField> {
 
   Widget _buildFrame({required Widget child}) {
     var borderRadius = BorderRadius.circular(_radius);
-    InputDecorationTheme _theme = InputDecorationTheme(
+    InputDecorationTheme theme = InputDecorationTheme(
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       filled: enabled,
@@ -80,7 +80,7 @@ class _SRTextFieldState extends State<SRTextField> {
       ),
     );
     return Theme(
-      data: ThemeData(inputDecorationTheme: _theme),
+      data: ThemeData(inputDecorationTheme: theme),
       child: child,
     );
   }

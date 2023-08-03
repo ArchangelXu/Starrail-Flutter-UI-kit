@@ -14,6 +14,9 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
   static const double _interval = 0.25;
   static const int _rotationDuration = 8000;
   static const int _flashDuration = _rotationDuration ~/ 4;
+  static const double _outerDotRadius = 6.5;
+  static const double _innerDotRadius = 2;
+
   final ElasticOutCurve _overshotCurve = const ElasticOutCurve(0.8);
   late final Animation<double> _outerRotationAnimation;
   late final Animation<double> _innerRotationAnimation;
@@ -103,10 +106,9 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
           return CustomPaint(
             painter: _Painter(
               progress: _outerFlashAnimation.value,
-              radius: 13 / 2,
+              radius: _outerDotRadius,
               borderWidth: 1,
               color: Colors.white,
-              flashTimes: 7,
             ),
           );
         },
@@ -134,10 +136,9 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
                   return CustomPaint(
                     painter: _Painter(
                       progress: _innerFlashAnimation.value,
-                      radius: 4 / 2,
+                      radius: _innerDotRadius,
                       borderWidth: 0.5,
                       color: Colors.white,
-                      flashTimes: 7,
                     ),
                   );
                 },
@@ -175,13 +176,13 @@ class _Painter extends CustomPainter {
   static const double _borderOpacity = 0.75;
   static const double _dotAnimationTotalProgress = 0.5;
   static const double _dotAnimationOffset = _dotAnimationTotalProgress / 2;
+  static const int _flashTimes = 7;
 
   /// 1:[0,0.25), 2:[0,0.5), 3:[0.25,0.75), 4:[0.5,1)
   final double progress;
   final double radius;
   final double borderWidth;
   final Color color;
-  final int flashTimes;
   final Paint _paint = Paint();
 
   _Painter({
@@ -189,7 +190,6 @@ class _Painter extends CustomPainter {
     required this.radius,
     required this.borderWidth,
     required this.color,
-    required this.flashTimes,
   }) {
     _paint.strokeWidth = borderWidth;
   }
@@ -197,7 +197,8 @@ class _Painter extends CustomPainter {
   void _drawDot({
     required Canvas canvas,
     required Rect rect,
-    required Offset dotProgressRange,
+    required double rangeStart,
+    required double rangeEnd,
     required bool drawBorder,
   }) {
     if (drawBorder) {
@@ -205,12 +206,10 @@ class _Painter extends CustomPainter {
       _paint.style = PaintingStyle.stroke;
       canvas.drawCircle(Offset(0, -rect.width / 2 + radius), radius, _paint);
     }
-    var end = dotProgressRange.dy;
-    var start = dotProgressRange.dx;
-    if (progress >= start && progress < end) {
+    if (progress >= rangeStart && progress < rangeEnd) {
       _paint.style = PaintingStyle.fill;
-      var center = (start + end) / 2;
-      var opacity = -(progress - center).abs() / (end - center) + 1;
+      var center = (rangeStart + rangeEnd) / 2;
+      var opacity = -(progress - center).abs() / (rangeEnd - center) + 1;
       _paint.color = color.withOpacity(opacity);
       canvas.drawCircle(Offset(0, -rect.width / 2 + radius), radius, _paint);
     }
@@ -220,17 +219,19 @@ class _Painter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.centerPivot(rect);
-    var dx = 0.0;
-    Offset range = Offset(dx, dx + _dotAnimationTotalProgress);
-    for (int i = 0; i < max(4, flashTimes); i++) {
+    double rangeStart = 0;
+    double rangeEnd = _dotAnimationTotalProgress;
+    for (int i = 0; i < max(4, _flashTimes); i++) {
       _drawDot(
         canvas: canvas,
         rect: rect,
-        dotProgressRange: range,
+        rangeStart: rangeStart,
+        rangeEnd: rangeEnd,
         drawBorder: i < 4,
       );
       canvas.rotate(-pi / 2);
-      range = range.translate(_dotAnimationOffset, _dotAnimationOffset);
+      rangeStart += _dotAnimationOffset;
+      rangeEnd += _dotAnimationOffset;
     }
     canvas.resetPivot(rect);
   }

@@ -42,7 +42,7 @@ class SRDialog extends StatelessWidget {
   }) {
     showDialog(
       context: context,
-      builder: (context) => Center(child: SRLoading()),
+      builder: (context) => const Center(child: SRLoading()),
     );
   }
 
@@ -94,17 +94,26 @@ class SRDialog extends StatelessWidget {
       key: key,
       child: Padding(
         padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SRDialogTitleRow(
-              showCloseButton: true,
-              showDivider: title != null,
-              title: title,
-            ),
-            _buildMessageRow(message),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SRDialogTitleRow(
+                  showCloseButton: true,
+                  showDivider: title != null,
+                  title: title,
+                ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: (constraints.maxHeight) * 3 / 4,
+                  ),
+                  child: _buildMessageRow(message),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -126,21 +135,14 @@ class SRDialog extends StatelessWidget {
   });
 
   static Widget _buildMessageRow(String message) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SizedBox(
-          height: constraints.maxWidth / 1.5,
-          child: SRScrollView(
-            children: [
-              Text(
-                message,
-                style: const TextStyle(fontSize: srDialogMessageSize),
-                textAlign: TextAlign.left,
-              )
-            ],
-          ),
-        );
-      },
+    return SRScrollView(
+      children: [
+        Text(
+          message,
+          style: const TextStyle(fontSize: srDialogMessageSize),
+          textAlign: TextAlign.left,
+        )
+      ],
     );
   }
 
@@ -235,7 +237,7 @@ class _DialogContainer extends StatelessWidget {
     int padding =
         (landscape ? _landscapeOuterPadding : _portraitOuterPadding) * 2;
     double maxWidth = landscape ? 640 : 360;
-    double maxHeight = landscape ? 280 : 540;
+    double maxHeight = landscape ? 320 : 540;
     if (data != null) {
       if (data.viewInsets.bottom > 0) {
         bottomPadding = data.viewInsets.bottom;

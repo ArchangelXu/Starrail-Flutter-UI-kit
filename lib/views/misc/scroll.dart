@@ -7,31 +7,36 @@ import 'package:starrail_ui/views/base/listener.dart';
 class SRScrollView extends StatelessWidget {
   final List<Widget> children;
   final Axis direction;
+  final EdgeInsetsGeometry? padding;
 
   const SRScrollView({
     super.key,
     required this.children,
+    this.padding,
     this.direction = Axis.vertical,
   });
 
   @override
   Widget build(BuildContext context) {
-    const padding = EdgeInsetsDirectional.symmetric(
+    EdgeInsetsGeometry padding2 = const EdgeInsetsDirectional.symmetric(
       vertical: srScrollbarFadeLength,
     );
+    if (padding != null) {
+      padding2 = padding2.add(padding!);
+    }
     return SRScrollbar(
       direction: direction,
       child: children.length == 1
           ? SingleChildScrollView(
               scrollDirection: direction,
-              padding: padding,
+              padding: padding2,
               physics: const BouncingScrollPhysics(),
               primary: true,
               child: children[0],
             )
           : ListView(
-              scrollDirection: direction,
-              padding: padding,
+        scrollDirection: direction,
+              padding: padding2,
               physics: const BouncingScrollPhysics(),
               primary: true,
               children: children,

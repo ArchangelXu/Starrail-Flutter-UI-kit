@@ -58,8 +58,18 @@ class DialogPage extends StatelessWidget {
               expanded: true,
               onPress: () => SRDialog.showMessage(
                 context: context,
-                title: "Title",
+                title: "Message",
                 message: lorem(paragraphs: 2, words: 20),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SRButton.text(
+              text: "SRDialog.message long",
+              expanded: true,
+              onPress: () => SRDialog.showMessage(
+                context: context,
+                title: "Long message",
+                message: lorem(paragraphs: 5, words: 200),
               ),
             ),
             const SizedBox(height: 16),
