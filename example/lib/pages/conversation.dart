@@ -23,11 +23,11 @@ class _ConversationPageState extends State<ConversationPage> {
     super.dispose();
   }
 
-  Widget _buildHeader(UserModel user, ColorScheme scheme) {
+  Widget _buildHeader(UserModel user) {
     Widget child;
     var name = Text(
       user.name,
-      style: TextStyle(fontSize: 15, color: scheme.inverseSurface),
+      style: TextStyle(fontSize: 15, color: Colors.black),
     );
     child = Column(
       mainAxisSize: MainAxisSize.min,
@@ -41,7 +41,7 @@ class _ConversationPageState extends State<ConversationPage> {
             user.signature!,
             style: TextStyle(
               fontSize: 11,
-              color: scheme.inverseSurface.withOpacity(0.5),
+              color: Colors.black.withOpacity(0.5),
             ),
           )
       ],
@@ -120,7 +120,7 @@ class _ConversationPageState extends State<ConversationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildHeader(leftUser, scheme),
+              _buildHeader(leftUser),
               Container(color: srCardTitleRowDivider, height: 1),
               Expanded(child: _buildMessages(leftUser, rightUser)),
             ],
@@ -219,7 +219,7 @@ class _MessageBanner extends StatelessWidget {
                 user.name,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context).colorScheme.inverseSurface,
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 8),
@@ -316,9 +316,7 @@ class _Bubble extends StatelessWidget {
     } else {
       return Container(
         decoration: BoxDecoration(
-          color: (isLeft
-                  ? Theme.of(context).colorScheme.surface
-                  : const Color(0xFFD4BC8A))
+          color: (isLeft ? Colors.white : const Color(0xFFD4BC8A))
               .withOpacity(0.95),
           borderRadius: borderRadius,
         ),

@@ -85,12 +85,25 @@ class _ProgressPageState extends State<ProgressPage> {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: colorScheme.surface,
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                "Sliders",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ),
+            const _Divider(),
             _buildBgmBar(
               title: "Master",
               value: _allValue,
@@ -121,41 +134,60 @@ class _ProgressPageState extends State<ProgressPage> {
               },
             ),
             const _Divider(),
-            _buildBgmBar(
-              title: "Sound",
-              value: _soundValue,
-              onChanged: (value) {
-                setState(() {
-                  _soundValue = value;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
+            SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SRSlider(
-                      value: _progressValue,
-                      onChanged: (value) {
-                        setState(() {
-                          _progressValue = value;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: SRProgressBar(
-                      progress: _progressValue,
-                      labelBuilder: (progress) =>
-                          sprintf("%.2f%% Completed", [progress * 100]),
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                "Progress bar",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: colorScheme.onSurface,
+                ),
               ),
             ),
+            const _Divider(),
+            SizedBox(
+              height: 40,
+              child: Center(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        color: srCardBackgroundDark,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: SRSlider(
+                          value: _progressValue,
+                          onChanged: (value) {
+                            setState(() {
+                              _progressValue = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: srCardBackground,
+                      child: SizedBox(
+                        width: 188,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: SRProgressBar(
+                              progress: _progressValue,
+                              labelBuilder: (progress) =>
+                                  sprintf("%.1f%% Completed", [progress * 100]),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const _Divider(),
+            const SizedBox(height: 16),
           ],
         ),
       ),

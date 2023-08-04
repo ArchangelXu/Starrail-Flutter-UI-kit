@@ -47,7 +47,9 @@ class _SRTextFieldState extends State<SRTextField> {
   }
 
   Widget _buildFrame({required Widget child}) {
-    var borderRadius = BorderRadius.circular(_radius);
+    var borderRadius = (widget.maxLines ?? 1) > 1
+        ? BorderRadius.zero
+        : BorderRadius.circular(_radius);
     InputDecorationTheme theme = InputDecorationTheme(
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -60,16 +62,16 @@ class _SRTextFieldState extends State<SRTextField> {
         ),
         borderRadius: borderRadius,
       ),
-      focusColor: srCardBackground,
+      focusColor: Colors.black.withOpacity(0.05),
       focusedBorder: OutlineInputBorder(
         borderSide: const BorderSide(
-          color: Colors.white,
+          color: srHighlighted,
           strokeAlign: BorderSide.strokeAlignOutside,
           width: 2,
         ),
         borderRadius: borderRadius,
       ),
-      hoverColor: srCardBackground,
+      hoverColor: Colors.black.withOpacity(0.05),
       disabledBorder: OutlineInputBorder(
         borderSide: const BorderSide(
           color: srButtonDisabled,
@@ -79,10 +81,7 @@ class _SRTextFieldState extends State<SRTextField> {
         borderRadius: borderRadius,
       ),
     );
-    return Theme(
-      data: ThemeData(inputDecorationTheme: theme),
-      child: child,
-    );
+    return Theme(data: ThemeData(inputDecorationTheme: theme), child: child);
   }
 
   @override

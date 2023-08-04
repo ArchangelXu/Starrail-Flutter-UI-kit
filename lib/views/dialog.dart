@@ -71,16 +71,20 @@ class SRDialog extends StatelessWidget {
         ),
         onWillPop: () => Future.value(allowDismiss),
       ),
-      transitionBuilder: (ctx, anim1, anim2, child) => BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 24 * anim1.value,
-          sigmaY: 24 * anim1.value,
-        ),
-        child: FadeTransition(
-          opacity: anim1,
-          child: child,
-        ),
-      ),
+      transitionBuilder: (ctx, anim1, anim2, child) {
+        var value = anim1.value;
+        value = Curves.easeInOut.transform(value);
+        return BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 24 * value,
+            sigmaY: 24 * value,
+          ),
+          child: Transform.translate(
+              offset: Offset(0, -8 * (1 - value)),
+              child: Opacity(opacity: value, child: child)),
+          // child: FadeTransition(opacity: anim1, child: child),
+        );
+      },
     );
   }
 

@@ -37,56 +37,78 @@ class _SelectablePageState extends State<SelectablePage> {
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 160,
                 childAspectRatio: 3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
               ),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                _buildCheckbox(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Light",
-                  dark: false,
-                  checked: _checked1,
-                  onChanged: (value) {
-                    setState(() {
-                      _checked1 = value ?? false;
-                    });
-                  },
+                  index: 0,
+                  child: _buildCheckbox(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Light",
+                    dark: false,
+                    checked: _checked1,
+                    onChanged: (value) {
+                      setState(() {
+                        _checked1 = value ?? false;
+                      });
+                    },
+                  ),
                 ),
-                _buildCheckbox(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Dark",
-                  dark: true,
-                  checked: _checked2,
-                  onChanged: (value) {
-                    setState(() {
-                      _checked2 = value ?? false;
-                    });
-                  },
+                  index: 1,
+                  child: _buildCheckbox(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Dark",
+                    dark: true,
+                    checked: _checked2,
+                    onChanged: (value) {
+                      setState(() {
+                        _checked2 = value ?? false;
+                      });
+                    },
+                  ),
                 ),
-                _buildCheckbox(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Auto",
-                  checked: _checked3,
-                  onChanged: (value) {
-                    setState(() {
-                      _checked3 = value ?? false;
-                    });
-                  },
+                  index: 2,
+                  child: _buildCheckbox(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Auto",
+                    checked: _checked3,
+                    onChanged: (value) {
+                      setState(() {
+                        _checked3 = value ?? false;
+                      });
+                    },
+                  ),
                 ),
-                _buildCheckbox(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Disabled 1",
-                  checked: true,
+                  index: 3,
+                  child: _buildCheckbox(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Disabled 1",
+                    checked: true,
+                  ),
                 ),
-                _buildCheckbox(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Disabled 2",
-                  checked: false,
+                  index: 4,
+                  child: _buildCheckbox(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Disabled 2",
+                    checked: false,
+                  ),
                 ),
               ],
             ),
@@ -101,44 +123,79 @@ class _SelectablePageState extends State<SelectablePage> {
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 160,
                 childAspectRatio: 3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
               ),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                _buildRadio(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Light",
-                  dark: false,
-                  value: 0,
-                  onChanged: _onRadioValueChanged,
+                  index: 0,
+                  child: _buildRadio(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Light",
+                    dark: false,
+                    value: 0,
+                    onChanged: _onRadioValueChanged,
+                  ),
                 ),
-                _buildRadio(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Dark",
-                  dark: true,
-                  value: 1,
-                  onChanged: _onRadioValueChanged,
+                  index: 1,
+                  child: _buildRadio(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Dark",
+                    dark: true,
+                    value: 1,
+                    onChanged: _onRadioValueChanged,
+                  ),
                 ),
-                _buildRadio(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Auto",
-                  value: 2,
-                  onChanged: _onRadioValueChanged,
+                  index: 2,
+                  child: _buildRadio(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Auto",
+                    value: 2,
+                    onChanged: _onRadioValueChanged,
+                  ),
                 ),
-                _buildRadio(
-                  textStyle: textStyle,
+                _buildFrame(
                   context: context,
-                  title: "Disabled",
-                  value: 3,
+                  index: 3,
+                  child: _buildRadio(
+                    textStyle: textStyle,
+                    context: context,
+                    title: "Disabled",
+                    value: 3,
+                  ),
                 ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFrame({
+    required Widget child,
+    required BuildContext context,
+    required int index,
+  }) {
+    var colorScheme = Theme.of(context).colorScheme;
+    var color = index % 2 == 0
+        ? colorScheme.inverseSurface.withOpacity(0.05)
+        : colorScheme.primaryContainer.withOpacity(0.4);
+    return Container(
+      decoration:
+          BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: child,
     );
   }
 

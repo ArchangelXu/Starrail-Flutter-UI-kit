@@ -26,16 +26,6 @@ class ButtonPage extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Text(
-                "New",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-            ),
             SRButton.text(
               text: "Normal",
               onPress: () => showSnackBar(context, "tap"),

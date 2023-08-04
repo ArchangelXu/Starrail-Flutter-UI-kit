@@ -1,7 +1,5 @@
-import 'dart:math';
-
+import 'package:example/util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:starrail_ui/views/misc/icon.dart';
 import 'package:starrail_ui/views/selectable/navigation_bar.dart';
 import 'package:starrail_ui/views/selectable/tabs.dart';
@@ -17,14 +15,7 @@ class _NavigationPageState extends State<NavigationPage>
     with SingleTickerProviderStateMixin {
   static const _tabCount = 3;
   late final TabController _tabController;
-  final List<Widget> _pages = List.generate(6, (index) => index)
-      .map(
-        (e) => _SubPage(
-          index: e,
-        ),
-      )
-      .toList();
-  int _tabIndex = 0;
+
   final icons = [
     Icons.image_rounded,
     Icons.volume_down_rounded,
@@ -32,6 +23,7 @@ class _NavigationPageState extends State<NavigationPage>
     Icons.perm_contact_cal,
     Icons.extension_rounded,
     Icons.settings,
+    Icons.memory_rounded,
   ];
 
   @override
@@ -53,120 +45,78 @@ class _NavigationPageState extends State<NavigationPage>
       backgroundColor: colorScheme.surface,
       extendBody: true,
       body: Column(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  "Tabs",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: SRTabBar(
-                  tabController: _tabController,
-                  selectedBackgroundColor: colorScheme.inverseSurface,
-                  unselectedBackgroundColor: colorScheme.surface,
-                  selectedForegroundColor: colorScheme.inversePrimary,
-                  unselectedForegroundColor: colorScheme.primary,
-                  items: icons
-                      .take(_tabCount)
-                      .map(
-                        (e) => SRTabBarItem(
-                          title: lorem(
-                            paragraphs: 1,
-                            words: 1 + Random().nextInt(1),
-                          ),
-                          icon: SRIcon(iconData: e),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-              Container(color: Colors.white, height: 4),
-            ],
-          ),
-          Expanded(
-            child: IndexedStack(
-              index: _tabIndex,
-              children: _pages,
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              "Tabs",
+              style: TextStyle(
+                fontSize: 18,
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: SRTabBar(
+              tabController: _tabController,
+              selectedBackgroundColor: colorScheme.inverseSurface,
+              unselectedBackgroundColor: colorScheme.surface,
+              selectedForegroundColor: colorScheme.inversePrimary,
+              unselectedForegroundColor: colorScheme.primary,
+              items: icons
+                  .take(_tabCount)
+                  .map(
+                    (e) => SRTabBarItem(
+                      title: "Tab ${icons.indexOf(e) + 1}",
+                      icon: SRIcon(iconData: e),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+          Container(color: colorScheme.inverseSurface, height: 4),
+          SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.all(16),
             child: Text(
               "Navigation bar",
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.white,
+                color: colorScheme.onSurface,
               ),
             ),
           ),
           SRNavigationBar.auto(
             context: context,
             direction: Axis.horizontal,
-            // scroll: true,
             onChanged: (value) {
-              setState(() {
-                _tabIndex = value;
-              });
+              showSnackBar(context, "This is page ${value + 1}");
+            },
+            icons: icons.take(4).map((e) => SRIcon(iconData: e)).toList(),
+          ),
+          SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              "Scrollable navigation bar",
+              style: TextStyle(
+                fontSize: 18,
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ),
+          SRNavigationBar.auto(
+            context: context,
+            direction: Axis.horizontal,
+            scroll: true,
+            onChanged: (value) {
+              showSnackBar(context, "This is page ${value + 1}");
             },
             icons: icons.map((e) => SRIcon(iconData: e)).toList(),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SubPage extends StatefulWidget {
-  static const _colors = [
-    Color(0xFFFF6060),
-    Color(0xFFFF9D60),
-    Color(0xFFD8A24D),
-    Color(0xFF63B248),
-    Color(0xFF49BABA),
-    Color(0xFF608DFF),
-    Color(0xFFA060FF),
-  ];
-  final int index;
-
-  const _SubPage({super.key, required this.index});
-
-  @override
-  State<_SubPage> createState() => _SubPageState();
-}
-
-class _SubPageState extends State<_SubPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: _SubPage._colors[widget.index % _SubPage._colors.length],
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Page ${widget.index + 1}\nPage state will be kept.",
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
       ),
     );
   }

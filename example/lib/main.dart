@@ -9,6 +9,7 @@ import 'package:example/pages/progress.dart';
 import 'package:example/pages/selectable.dart';
 import 'package:example/util.dart';
 import 'package:flutter/material.dart';
+import 'package:starrail_ui/theme/colors.dart';
 import 'package:starrail_ui/views/buttons/normal.dart';
 import 'package:starrail_ui/views/misc/icon.dart';
 import 'package:starrail_ui/views/selectable/tabs.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         var themeData = ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple,
+            seedColor: srHighlighted,
           ),
         );
         return MaterialApp(
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
           darkTheme: themeData.copyWith(
             brightness: Brightness.dark,
             colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple,
+              seedColor: srHighlighted,
               brightness: Brightness.dark,
             ),
           ),
