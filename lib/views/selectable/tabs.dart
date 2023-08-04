@@ -267,7 +267,6 @@ class _Painter extends CustomPainter {
 
   void _drawShadow(Canvas canvas, RRect rRect) {
     canvas.save();
-    // canvas.translate(2, 0);
     canvas.drawShadow(
       Path()
         ..addRRect(
