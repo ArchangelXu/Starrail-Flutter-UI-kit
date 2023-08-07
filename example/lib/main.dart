@@ -133,7 +133,7 @@ class DemoPageState extends State<DemoPage>
     super.initState();
     _tabController = TabController(
       length: _pages.length,
-      initialIndex: 5,
+      initialIndex: 0,
       vsync: this,
     );
   }
@@ -150,7 +150,7 @@ class DemoPageState extends State<DemoPage>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorScheme.primaryContainer,
-        title: const Text('UI Kit Demo'),
+        title: const Text('Starrail UI Kit Demo'),
         bottom: SRTabBar(
           tabController: _tabController,
           scroll: true,
