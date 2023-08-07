@@ -1,39 +1,28 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+# A UI Kit for Flutter, inspired by [Honkai: Star Rail](https://honkai-star-rail.fandom.com/wiki/Honkai:_Star_Rail_Wiki)
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Try online demo [here](http://starrail.mingxi.tech/index.html).
+
+Note: Known issue, this demo may not work correctly when browsing with you Android Chrome. If you see something weird,
+try browsing with Chrome on MacOS.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add dependency in your pubspec.yaml:
+
+```
+starrail_ui: 
+    git:
+      url: https://github.com/ArchangelXu/Starrail-Flutter-UI-kit
+      ref: c4f4a2ab93c370379abb7baac72f5b8eb595a093
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
-```
+See demo code in `/example/lib/pages`.
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+This repo is created solely by myself out of personal interest and love for the game.
+I do not take any responsibility for any improper use of this code.
