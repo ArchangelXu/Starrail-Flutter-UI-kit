@@ -14,3 +14,13 @@ extension StringExtension on String {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }
+
+extension HexColor on Color {
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toHex({bool leadingHashSign = true, bool hasAlpha = false}) =>
+      '${leadingHashSign ? '#' : ''}'
+      '${hasAlpha ? alpha.toRadixString(16).padLeft(2, '0') : ""}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
+}

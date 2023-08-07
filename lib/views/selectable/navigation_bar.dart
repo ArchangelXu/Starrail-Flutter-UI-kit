@@ -32,7 +32,7 @@ class SRNavigationBar extends StatefulWidget {
   }) {
     return Theme.of(context).brightness == Brightness.dark
         ? SRNavigationBar.dark(
-      key: key,
+            key: key,
             scroll: scroll,
             direction: direction,
             spacing: spacing,
@@ -168,31 +168,24 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
     ).toList();
   }
 
-  List<Widget> _buildCutoutItems() {
-    double lineThickness = SRNavigationBar._lineThickness;
+  List<_BarLineInfo> _getLineInfo(double maxSize) {
     double itemSize = _SRNavigationBarItemState._size;
-    return widget.icons
-        .map(
-          (e) => SizedBox.square(
-            dimension: itemSize,
-            child: Padding(
-              padding: const EdgeInsets.all(_SRNavigationBarItemState._padding),
-              child: Center(
-                child: Container(
-                  // must not be transparent
-                  color: Colors.black,
-                  width: widget.direction == Axis.vertical
-                      ? lineThickness
-                      : itemSize,
-                  height: widget.direction == Axis.horizontal
-                      ? lineThickness
-                      : itemSize,
-                ),
-              ),
-            ),
-          ),
-        )
-        .toList();
+    double start = 0;
+    List<_BarLineInfo> info = [];
+    double spacing = 0;
+    double padding = _SRNavigationBarItemState._padding;
+    if (widget.scroll) {
+      spacing = widget.spacing;
+    } else {
+      spacing = maxSize / widget.icons.length - itemSize;
+      start += spacing / 2;
+    }
+    for (int i = 0; i < widget.icons.length - 1; i++) {
+      start += itemSize - padding;
+      info.add(_BarLineInfo(start, start + spacing + padding * 2));
+      start += spacing + padding;
+    }
+    return info;
   }
 
   Widget _applyDirectionOnItems(List<Widget> items) {
@@ -200,7 +193,17 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
     Widget child;
     if (widget.scroll) {
       widgets = items
-          .map((e) => [e, SizedBox.square(dimension: widget.spacing)])
+          .map(
+            (e) => [
+              e,
+              SizedBox(
+                width:
+                    widget.direction == Axis.horizontal ? widget.spacing : null,
+                height:
+                    widget.direction == Axis.horizontal ? null : widget.spacing,
+              )
+            ],
+          )
           .expand((e) => e)
           .toList()
         ..removeLast();
@@ -217,15 +220,10 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
       }
     } else {
       widgets = items.map((e) => Expanded(child: Center(child: e))).toList();
-
       if (widget.direction == Axis.horizontal) {
-        child = Row(
-          children: widgets,
-        );
+        child = Row(children: widgets);
       } else {
-        child = Column(
-          children: widgets,
-        );
+        child = Column(children: widgets);
       }
     }
     return child;
@@ -239,41 +237,42 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
     return _applyDirectionOnItems(items);
   }
 
-  Widget _buildBackground() {
-    List<Widget> items = _buildCutoutItems();
-    if (items.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    // return Positioned.fill(
-    //   child: _applyDirectionOnItems(items),
-    // );
-    return Positioned.fill(
-      child: _Cutout(color: lineColor, child: _applyDirectionOnItems(items)),
-    );
-  }
-
   @override
-  Widget build(BuildContext context) {
-    Widget stack = Stack(
-      children: [
-        _buildBackground(),
-        _buildForeground(),
-      ],
-    );
-    if (widget.scroll) {
-      stack = Center(
-        child: SingleChildScrollView(
-          scrollDirection: widget.direction,
-          child: stack,
-        ),
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) {
+          Widget result = CustomPaint(
+            painter: _BarPainter(
+              direction: widget.direction,
+              lineThickness: SRNavigationBar._lineThickness,
+              lineColor: lineColor,
+              lineInfo: _getLineInfo(
+                widget.direction == Axis.horizontal
+                    ? constraints.maxWidth
+                    : constraints.maxHeight,
+              ),
+            ),
+            child: _buildForeground(),
+          );
+          if (widget.scroll) {
+            result = Center(
+              child: ScrollConfiguration(
+                behavior:
+                    ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                child: SingleChildScrollView(
+                  scrollDirection: widget.direction,
+                  child: result,
+                ),
+              ),
+            );
+          }
+          return SizedBox(
+            width:
+                widget.direction == Axis.horizontal ? null : widget.thickness,
+            height: widget.direction == Axis.vertical ? null : widget.thickness,
+            child: result,
+          );
+        },
       );
-    }
-    return SizedBox(
-      width: widget.direction == Axis.horizontal ? null : widget.thickness,
-      height: widget.direction == Axis.vertical ? null : widget.thickness,
-      child: stack,
-    );
-  }
 }
 
 class SRNavigationBarItem extends StatefulWidget {
@@ -372,19 +371,6 @@ class _SRNavigationBarItemState extends State<SRNavigationBarItem>
   @override
   VoidCallback? get onPress => widget.onPress;
 
-  // SRLoopAnimatedBuilder _buildSpinning() {
-  //   return SRLoopAnimatedBuilder(
-  //     enabled: widget.selected,
-  //     duration: const Duration(seconds: 12),
-  //     builder: (context, value) {
-  //       return Transform.rotate(
-  //         angle: 2 * pi * value,
-  //         child: _buildPainter(),
-  //       );
-  //     },
-  //   );
-  // }
-
   SRInteractiveBuilder _buildPainter() {
     return SRInteractiveBuilder(
       builder: (context, hoverProgress, touchProgress) {
@@ -443,25 +429,59 @@ class _SRNavigationBarItemState extends State<SRNavigationBarItem>
   }
 }
 
-class _Cutout extends StatelessWidget {
-  const _Cutout({
-    Key? key,
-    required this.color,
-    required this.child,
-  }) : super(key: key);
+class _BarLineInfo {
+  final double start;
+  final double end;
 
-  final Color color;
-  final Widget child;
+  _BarLineInfo(this.start, this.end);
+}
+
+class _BarPainter extends CustomPainter {
+  final Axis direction;
+  final double lineThickness;
+  final Color lineColor;
+  final List<_BarLineInfo> lineInfo;
+
+  _BarPainter({
+    required this.direction,
+    required this.lineThickness,
+    required this.lineColor,
+    required this.lineInfo,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      blendMode: BlendMode.srcOut,
-      shaderCallback: (bounds) =>
-          LinearGradient(colors: [color], stops: const [0.0])
-              .createShader(bounds),
-      child: child,
-    );
+  void paint(Canvas canvas, Size size) {
+    Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    var paint = Paint();
+    paint.color = lineColor;
+    paint.style = PaintingStyle.stroke;
+    paint.strokeWidth = lineThickness;
+    if (direction == Axis.horizontal) {
+      for (var info in lineInfo) {
+        canvas.drawLine(
+          Offset(info.start, rect.height / 2),
+          Offset(info.end, rect.height / 2),
+          paint,
+        );
+      }
+    } else {
+      for (var info in lineInfo) {
+        canvas.drawLine(
+          Offset(rect.width / 2, info.start),
+          Offset(rect.width / 2, info.end),
+          paint,
+        );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return oldDelegate is! _BarPainter ||
+        oldDelegate.direction != direction ||
+        oldDelegate.lineThickness != lineThickness ||
+        oldDelegate.lineColor != lineColor ||
+        oldDelegate.lineInfo != lineInfo;
   }
 }
 

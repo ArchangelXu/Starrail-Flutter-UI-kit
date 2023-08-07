@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -38,7 +38,7 @@ class SRIcon extends StatelessWidget {
         bool svg = iconPath.toLowerCase().contains(".svg");
         if (iconPath.startsWith("/")) {
           //file
-          File file = File(iconPath);
+          dynamic file = File(iconPath);
           child = svg
               ? SvgPicture.file(
                   file,

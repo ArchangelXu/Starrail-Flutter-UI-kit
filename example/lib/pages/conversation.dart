@@ -27,7 +27,7 @@ class _ConversationPageState extends State<ConversationPage> {
     Widget child;
     var name = Text(
       user.name,
-      style: TextStyle(fontSize: 15, color: Colors.black),
+      style: const TextStyle(fontSize: 15, color: Colors.black),
     );
     child = Column(
       mainAxisSize: MainAxisSize.min,
@@ -58,7 +58,7 @@ class _ConversationPageState extends State<ConversationPage> {
     UserModel rightUser,
   ) {
     return _ConversationMessages(
-      padding: EdgeInsets.only(left: 16, right: 8),
+      padding: const EdgeInsets.only(left: 16, right: 8),
       model: ConversationModel(
         leftUser: leftUser,
         rightUser: rightUser,
@@ -110,21 +110,31 @@ class _ConversationPageState extends State<ConversationPage> {
       signature: (Random().nextDouble() > 0.5) ? null : _randomString(4),
       avatarAssetPath: _avatarPath(avatarId),
     );
-    var scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: scheme.surface,
+      backgroundColor: Colors.black,
       body: Container(
-        color: scheme.inverseSurface,
         padding: const EdgeInsets.all(16),
-        child: SRCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildHeader(leftUser),
-              Container(color: srCardTitleRowDivider, height: 1),
-              Expanded(child: _buildMessages(leftUser, rightUser)),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              "Mocked Conversation",
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: SRCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildHeader(leftUser),
+                    Container(color: srCardTitleRowDivider, height: 1),
+                    Expanded(child: _buildMessages(leftUser, rightUser)),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -217,7 +227,7 @@ class _MessageBanner extends StatelessWidget {
             children: [
               Text(
                 user.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: Colors.black,
                 ),

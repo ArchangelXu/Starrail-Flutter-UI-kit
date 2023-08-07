@@ -77,7 +77,7 @@ class _NavigationPageState extends State<NavigationPage>
             ),
           ),
           Container(color: colorScheme.inverseSurface, height: 4),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
@@ -96,7 +96,7 @@ class _NavigationPageState extends State<NavigationPage>
             },
             icons: icons.take(4).map((e) => SRIcon(iconData: e)).toList(),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
@@ -115,6 +115,46 @@ class _NavigationPageState extends State<NavigationPage>
               showSnackBar(context, "This is page ${value + 1}");
             },
             icons: icons.map((e) => SRIcon(iconData: e)).toList(),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              "Vertical",
+              style: TextStyle(
+                fontSize: 18,
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              color: colorScheme.primaryContainer,
+              child: Row(
+                children: [
+                  SRNavigationBar.auto(
+                    context: context,
+                    direction: Axis.vertical,
+                    onChanged: (value) {
+                      showSnackBar(context, "This is page ${value + 1}");
+                    },
+                    icons:
+                        icons.take(4).map((e) => SRIcon(iconData: e)).toList(),
+                  ),
+                  const SizedBox(width: 8),
+                  SRNavigationBar.auto(
+                    context: context,
+                    direction: Axis.vertical,
+                    scroll: true,
+                    onChanged: (value) {
+                      showSnackBar(context, "This is page ${value + 1}");
+                    },
+                    icons: icons.map((e) => SRIcon(iconData: e)).toList(),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

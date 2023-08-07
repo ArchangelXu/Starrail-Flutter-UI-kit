@@ -10,15 +10,19 @@ import 'package:example/pages/selectable.dart';
 import 'package:example/util.dart';
 import 'package:flutter/material.dart';
 import 'package:starrail_ui/theme/colors.dart';
+import 'package:starrail_ui/views/base/listener.dart';
 import 'package:starrail_ui/views/buttons/normal.dart';
+import 'package:starrail_ui/views/dialog.dart';
 import 'package:starrail_ui/views/misc/icon.dart';
+import 'package:starrail_ui/views/misc/scroll.dart';
 import 'package:starrail_ui/views/selectable/tabs.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-ValueNotifier<bool> globalBrightnessLight2 = ValueNotifier(true);
+ValueNotifier<bool> globalBrightnessLight = ValueNotifier(true);
+ValueNotifier<Color> globalThemeColor = ValueNotifier(srHighlighted);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,29 +30,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: globalBrightnessLight2,
-      builder: (context, value, child) {
-        var themeData = ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: srHighlighted,
-          ),
-        );
-        return MaterialApp(
-          theme: themeData,
-          darkTheme: themeData.copyWith(
-            brightness: Brightness.dark,
+      valueListenable: globalBrightnessLight,
+      builder: (context, light, child) => ValueListenableBuilder(
+        valueListenable: globalThemeColor,
+        builder: (context, color, child) {
+          var themeData = ThemeData(
+            useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
-              seedColor: srHighlighted,
-              brightness: Brightness.dark,
+              seedColor: color,
             ),
-          ),
-          themeMode: value ? ThemeMode.light : ThemeMode.dark,
-          title: 'Starrail UI Kit Demo',
-          scrollBehavior: DemoScrollBehavior(),
-          home: const DemoPage(),
-        );
-      },
+          );
+          return MaterialApp(
+            theme: themeData,
+            darkTheme: themeData.copyWith(
+              brightness: Brightness.dark,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: color,
+                brightness: Brightness.dark,
+              ),
+            ),
+            themeMode: light ? ThemeMode.light : ThemeMode.dark,
+            title: 'Starrail UI Kit Demo',
+            scrollBehavior: DemoScrollBehavior(),
+            home: const DemoPage(),
+          );
+        },
+      ),
     );
   }
 }
@@ -71,6 +78,17 @@ class DemoPage extends StatefulWidget {
 
 class DemoPageState extends State<DemoPage>
     with SingleTickerProviderStateMixin {
+  static const List<Color> _colors = [
+    srHighlighted,
+    Colors.red,
+    Colors.orange,
+    Colors.yellow,
+    Colors.green,
+    Colors.cyan,
+    Colors.blue,
+    Colors.purple,
+    Colors.pinkAccent,
+  ];
   late final TabController _tabController;
   final List<_PageInfo> _pages = <_PageInfo>[
     _PageInfo(
@@ -113,7 +131,11 @@ class DemoPageState extends State<DemoPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _pages.length, vsync: this);
+    _tabController = TabController(
+      length: _pages.length,
+      initialIndex: 5,
+      vsync: this,
+    );
   }
 
   @override
@@ -145,28 +167,247 @@ class DemoPageState extends State<DemoPage>
           selectedForegroundColor: colorScheme.primary,
           unselectedForegroundColor: colorScheme.inversePrimary,
         ),
-        actions: [
-          ValueListenableBuilder(
-            valueListenable: globalBrightnessLight2,
-            builder: (BuildContext context, value, Widget? child) =>
-                SRButton.circular(
-              iconData:
-                  value ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-              onPress: () {
-                setState(() {
-                  globalBrightnessLight2.value = !globalBrightnessLight2.value;
-                });
-              },
-            ),
-          ),
-          const SizedBox(
-            width: 48,
-          )
-        ],
+        actions: _buildActions(),
       ),
       body: TabBarView(
         controller: _tabController,
         children: _pages.map((e) => e.page).toList(),
+      ),
+    );
+  }
+
+  void _showColorPicker() {
+    SRDialog.showCustom(
+      context: context,
+      dialog: SRDialog.custom(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SRDialogTitleRow(
+                showCloseButton: true,
+                showDivider: true,
+                title: "Theme Color",
+              ),
+              SizedBox(
+                height: 200,
+                child: SRScrollbar(
+                  direction: Axis.vertical,
+                  child: GridView(
+                    primary: true,
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      mainAxisExtent: 75,
+                      maxCrossAxisExtent: 65,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 65 / 75,
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    children: _colors.map((e) => _ColorItem(color: e)).toList(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildActions() {
+    return [
+      ValueListenableBuilder(
+        valueListenable: globalBrightnessLight,
+        builder: (BuildContext context, value, Widget? child) =>
+            SRButton.circular(
+          iconData: value ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+          onPress: () {
+            setState(() {
+              globalBrightnessLight.value = !globalBrightnessLight.value;
+            });
+          },
+        ),
+      ),
+      const SizedBox(width: 16),
+      ValueListenableBuilder(
+        valueListenable: globalThemeColor,
+        builder: (BuildContext context, value, Widget? child) =>
+            SRButton.circular(
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: value,
+            ),
+            width: 16,
+            height: 16,
+          ),
+          onPress: () => _showColorPicker(),
+        ),
+      ),
+      const SizedBox(
+        width: 48,
+      )
+    ];
+  }
+}
+
+class _ColorItem extends StatefulWidget {
+  final Color color;
+
+  const _ColorItem({super.key, required this.color});
+
+  @override
+  State<_ColorItem> createState() => _ColorItemState();
+}
+
+class _ColorItemState extends State<_ColorItem> with ClickableStateMixin {
+  @override
+  VoidCallback? get onLongPress => null;
+
+  @override
+  VoidCallback? get onPress => _onClick;
+
+  void _onClick() {
+    debugPrint("_onClick");
+    setState(() {
+      globalThemeColor.value = widget.color;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: globalThemeColor,
+      builder: (context, child) {
+        return SRSelectionAnimatedBuilder(
+          selected: widget.color == globalThemeColor.value,
+          builder: (context, value, child) => SRInteractiveBuilder(
+            builder: (context, hoverProgress, touchProgress) {
+              return Transform.scale(
+                scale: 1 + 0.1 * hoverProgress,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.lerp(
+                        Colors.white.withOpacity(0), Colors.white, value),
+                    borderRadius:
+                        const BorderRadius.only(topRight: Radius.circular(9)),
+                    border: Border.all(
+                      color: Color.lerp(
+                          Colors.black.withOpacity(0), Colors.black, value)!,
+                      width: 0.5,
+                    ),
+                  ),
+                  padding: const EdgeInsets.only(
+                      left: 1.5, right: 1.5, top: 1.5, bottom: 3),
+                  child: buildGestureDetector(
+                    child: Stack(
+                      children: [
+                        _buildColor(),
+                        _buildInnerBorder(),
+                        _buildGradient(),
+                        _buildTextBar(),
+                        _buildIcon(),
+                        _buildOverlay(touchProgress),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Positioned _buildOverlay(double progress) {
+    return Positioned.fill(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(topRight: Radius.circular(9)),
+          color: Color.lerp(Colors.black.withOpacity(0),
+              Colors.black.withOpacity(0.25), progress),
+        ),
+      ),
+    );
+  }
+
+  Positioned _buildInnerBorder() {
+    return Positioned(
+      top: 2,
+      right: 2,
+      left: 2,
+      bottom: 2,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white.withOpacity(0.75), width: 1),
+          borderRadius: const BorderRadius.only(topRight: Radius.circular(7)),
+        ),
+      ),
+    );
+  }
+
+  Positioned _buildColor() {
+    return Positioned.fill(
+      child: Container(
+        decoration: BoxDecoration(
+          color: widget.color,
+          borderRadius: const BorderRadius.only(topRight: Radius.circular(7)),
+        ),
+      ),
+    );
+  }
+
+  Container _buildGradient() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(topRight: Radius.circular(7)),
+        gradient: LinearGradient(
+          colors: [
+            Colors.black.withOpacity(0),
+            Colors.black.withOpacity(0),
+            Colors.black.withOpacity(0.25)
+          ],
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          stops: [0, 0.5, 1],
+        ),
+      ),
+    );
+  }
+
+  Positioned _buildIcon() {
+    return const Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 16,
+        child: Center(
+          child: Icon(
+            Icons.brush_rounded,
+            color: Colors.white,
+            size: 36,
+          ),
+        ));
+  }
+
+  Positioned _buildTextBar() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 1,
+      child: Container(
+        color: Colors.black,
+        height: 14,
+        child: Center(
+          child: Text(
+            widget.color.toHex(leadingHashSign: true).toUpperCase(),
+            style: const TextStyle(color: Colors.white, fontSize: 8),
+          ),
+        ),
       ),
     );
   }
