@@ -42,7 +42,7 @@ class SRNavigationBar extends StatefulWidget {
             onChanged: onChanged,
           )
         : SRNavigationBar.light(
-      key: key,
+            key: key,
             scroll: scroll,
             direction: direction,
             spacing: spacing,
@@ -295,13 +295,13 @@ class SRNavigationBarItem extends StatefulWidget {
   }) {
     return Theme.of(context).brightness == Brightness.dark
         ? SRNavigationBarItem.dark(
-      key: key,
+            key: key,
             selected: selected,
             onPress: onPress,
             icon: icon,
           )
         : SRNavigationBarItem.light(
-      key: key,
+            key: key,
             selected: selected,
             onPress: onPress,
             icon: icon,

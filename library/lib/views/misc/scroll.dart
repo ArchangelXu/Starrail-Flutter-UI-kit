@@ -35,7 +35,7 @@ class SRScrollView extends StatelessWidget {
               child: children[0],
             )
           : ListView(
-        scrollDirection: direction,
+              scrollDirection: direction,
               padding: padding2,
               physics: const BouncingScrollPhysics(),
               primary: true,

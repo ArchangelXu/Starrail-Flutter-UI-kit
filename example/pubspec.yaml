@@ -35,7 +35,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   # starrail UI kit
   starrail_ui:
-    path: ../
+    path: ../library/
   # for demo
   flutter_lorem: ^2.0.0
   sprintf: ^7.0.0
