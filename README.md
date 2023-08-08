@@ -15,7 +15,8 @@ Add the dependency in your pubspec.yaml:
 starrail_ui: 
   git:
     url: https://github.com/ArchangelXu/Starrail-Flutter-UI-kit
-    ref: 42bf1aa9d92f5975636f224a1c2fc12db80666f8
+    path: library
+    ref: 417747cedc854ea203600e9138166d1893413d90
 ```
 
 ## Usage
