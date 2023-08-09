@@ -16,7 +16,17 @@ starrail_ui:
   git:
     url: https://github.com/ArchangelXu/Starrail-Flutter-UI-kit
     path: library
-    ref: 417747cedc854ea203600e9138166d1893413d90
+    ref: 1cf7696d09f5d11ed6ba65fc4c5d467b09f4118a
+```
+
+or
+
+```
+starrail_ui: 
+  git:
+    url: https://github.com/ArchangelXu/Starrail-Flutter-UI-kit
+    path: library
+    ref: master
 ```
 
 ## Usage
