@@ -11,6 +11,8 @@ class SRLoading extends StatefulWidget {
 }
 
 class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
+  static const double _outerSize = 90;
+  static const double _innerSize = 72;
   static const double _interval = 0.25;
   static const int _rotationDuration = 8000;
   static const int _flashDuration = _rotationDuration ~/ 4;
@@ -83,7 +85,7 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
     _outerFlashAnimationController.repeat();
     Future.delayed(
       const Duration(milliseconds: 500),
-      () {
+          () {
         _innerRotationAnimationController.repeat();
         _innerFlashAnimationController.repeat();
       },
@@ -97,9 +99,9 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
         _interval * _overshotCurve.transform(frag / _interval);
   }
 
-  Widget _buildOuterDots() {
+  Widget _buildOuterDots(Widget? child) {
     return SizedBox.square(
-      dimension: 90,
+      dimension: _outerSize,
       child: AnimatedBuilder(
         animation: _outerFlashAnimation,
         builder: (context, child) {
@@ -110,43 +112,42 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
               borderWidth: 1,
               color: Colors.white,
             ),
+            // size: Size.square(90),
+            child: child,
           );
         },
+        child: child,
       ),
     );
   }
 
   Widget _buildInnerDots() {
-    return Center(
-      child: SizedBox.square(
-        dimension: 75,
-        child: AnimatedBuilder(
-          animation: _innerRotationAnimation,
-          builder: (BuildContext context, Widget? child) {
-            return Transform.rotate(
-              angle: -pi / 4 -
-                  pi *
-                      2 *
-                      _computeRotationProgress(
-                        _innerRotationAnimation.value,
-                      ),
-              child: AnimatedBuilder(
-                animation: _innerFlashAnimation,
-                builder: (context, child) {
-                  return CustomPaint(
-                    painter: _Painter(
-                      progress: _innerFlashAnimation.value,
-                      radius: _innerDotRadius,
-                      borderWidth: 0.5,
-                      color: Colors.white,
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-        ),
-      ),
+    return AnimatedBuilder(
+      animation: _innerRotationAnimation,
+      builder: (BuildContext context, Widget? child) {
+        return Transform.rotate(
+          angle: -pi / 4 -
+              pi *
+                  2 *
+                  _computeRotationProgress(
+                    _innerRotationAnimation.value,
+                  ),
+          child: AnimatedBuilder(
+            animation: _innerFlashAnimation,
+            builder: (context, child) {
+              return CustomPaint(
+                painter: _Painter(
+                  progress: _innerFlashAnimation.value,
+                  radius: _innerDotRadius,
+                  borderWidth: 0.5,
+                  color: Colors.white,
+                ),
+                // size: Size.square(75),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -158,13 +159,11 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
         return Transform.rotate(
           angle:
               -pi * 2 * _computeRotationProgress(_outerRotationAnimation.value),
-          child: Stack(
-            children: [
-              _buildOuterDots(),
-              Positioned.fill(
-                child: _buildInnerDots(),
-              ),
-            ],
+          child: _buildOuterDots(
+            Padding(
+              padding: const EdgeInsets.all((_outerSize - _innerSize) / 2),
+              child: _buildInnerDots(),
+            ),
           ),
         );
       },
