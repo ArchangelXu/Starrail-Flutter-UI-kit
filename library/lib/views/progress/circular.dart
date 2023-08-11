@@ -4,7 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:starrail_ui/util/canvas.dart';
 
 class SRLoading extends StatefulWidget {
-  const SRLoading({super.key});
+  final double size;
+  final double outerDotsRadius;
+  final double innerDotsRadius;
+
+  const SRLoading({
+    super.key,
+    this.size = _SRLoadingState._outerSize,
+    this.outerDotsRadius = _SRLoadingState._outerDotRadius,
+    this.innerDotsRadius = _SRLoadingState._innerDotRadius,
+  });
 
   @override
   State<SRLoading> createState() => _SRLoadingState();
@@ -12,7 +21,7 @@ class SRLoading extends StatefulWidget {
 
 class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
   static const double _outerSize = 90;
-  static const double _innerSize = 72;
+  static const double _innerRatio = 72 / 90;
   static const double _interval = 0.25;
   static const int _rotationDuration = 8000;
   static const int _flashDuration = _rotationDuration ~/ 4;
@@ -101,14 +110,14 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
 
   Widget _buildOuterDots(Widget? child) {
     return SizedBox.square(
-      dimension: _outerSize,
+      dimension: widget.size,
       child: AnimatedBuilder(
         animation: _outerFlashAnimation,
         builder: (context, child) {
           return CustomPaint(
             painter: _Painter(
               progress: _outerFlashAnimation.value,
-              radius: _outerDotRadius,
+              radius: widget.outerDotsRadius,
               borderWidth: 1,
               color: Colors.white,
             ),
@@ -138,7 +147,7 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
               return CustomPaint(
                 painter: _Painter(
                   progress: _innerFlashAnimation.value,
-                  radius: _innerDotRadius,
+                  radius: widget.innerDotsRadius,
                   borderWidth: 0.5,
                   color: Colors.white,
                 ),
@@ -161,7 +170,8 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
               -pi * 2 * _computeRotationProgress(_outerRotationAnimation.value),
           child: _buildOuterDots(
             Padding(
-              padding: const EdgeInsets.all((_outerSize - _innerSize) / 2),
+              padding:
+                  EdgeInsets.all((widget.size - widget.size * _innerRatio) / 2),
               child: _buildInnerDots(),
             ),
           ),
