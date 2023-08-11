@@ -11,15 +11,7 @@ try browsing with Chrome on MacOS.
 
 Add the dependency in your pubspec.yaml:
 
-```
-starrail_ui: 
-  git:
-    url: https://github.com/ArchangelXu/Starrail-Flutter-UI-kit
-    path: library
-    ref: 1cf7696d09f5d11ed6ba65fc4c5d467b09f4118a
-```
-
-or
+using latest code
 
 ```
 starrail_ui: 
@@ -27,6 +19,16 @@ starrail_ui:
     url: https://github.com/ArchangelXu/Starrail-Flutter-UI-kit
     path: library
     ref: master
+```
+
+or using commit reversion number:
+
+```
+starrail_ui: 
+  git:
+    url: https://github.com/ArchangelXu/Starrail-Flutter-UI-kit
+    path: library
+    ref: c25d4e5308c0ee81f980ebccf219c4f2025d2827
 ```
 
 ## Usage
