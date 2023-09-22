@@ -17,7 +17,6 @@ class _ProgressPageState extends State<ProgressPage> {
   double _allValue = 1;
   double _bgmValue = 1;
   double _voiceValue = 0.7;
-  double _soundValue = 0.5;
   double _progressValue = 0;
 
   @override
@@ -73,7 +72,7 @@ class _ProgressPageState extends State<ProgressPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16)
+                  const SizedBox(width: 16),
                 ],
               ),
             ),
@@ -134,7 +133,7 @@ class _ProgressPageState extends State<ProgressPage> {
               },
             ),
             const _Divider(),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(

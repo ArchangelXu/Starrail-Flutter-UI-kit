@@ -11,6 +11,7 @@ import 'package:example/util.dart';
 import 'package:flutter/material.dart';
 import 'package:starrail_ui/theme/colors.dart';
 import 'package:starrail_ui/views/base/listener.dart';
+import 'package:starrail_ui/views/base/squircle.dart';
 import 'package:starrail_ui/views/buttons/normal.dart';
 import 'package:starrail_ui/views/dialog.dart';
 import 'package:starrail_ui/views/misc/icon.dart';
@@ -205,7 +206,7 @@ class DemoPageState extends State<DemoPage>
                       crossAxisSpacing: 16,
                       childAspectRatio: 65 / 75,
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     children: _colors.map((e) => _ColorItem(color: e)).toList(),
                   ),
                 ),
@@ -249,7 +250,7 @@ class DemoPageState extends State<DemoPage>
       ),
       const SizedBox(
         width: 48,
-      )
+      ),
     ];
   }
 }
@@ -291,17 +292,28 @@ class _ColorItemState extends State<_ColorItem> with ClickableStateMixin {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Color.lerp(
-                        Colors.white.withOpacity(0), Colors.white, value),
-                    borderRadius:
-                        const BorderRadius.only(topRight: Radius.circular(9)),
+                      Colors.white.withOpacity(0),
+                      Colors.white,
+                      value,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topRight: SmoothCornerRadius.circular(9),
+                    ),
                     border: Border.all(
                       color: Color.lerp(
-                          Colors.black.withOpacity(0), Colors.black, value)!,
+                        Colors.black.withOpacity(0),
+                        Colors.black,
+                        value,
+                      )!,
                       width: 0.5,
                     ),
                   ),
                   padding: const EdgeInsets.only(
-                      left: 1.5, right: 1.5, top: 1.5, bottom: 3),
+                    left: 1.5,
+                    right: 1.5,
+                    top: 1.5,
+                    bottom: 3,
+                  ),
                   child: buildGestureDetector(
                     child: Stack(
                       children: [
@@ -327,9 +339,12 @@ class _ColorItemState extends State<_ColorItem> with ClickableStateMixin {
     return Positioned.fill(
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(topRight: Radius.circular(9)),
+          borderRadius:
+              BorderRadius.only(topRight: SmoothCornerRadius.circular(9)),
           color: Color.lerp(Colors.black.withOpacity(0),
-              Colors.black.withOpacity(0.25), progress),
+            Colors.black.withOpacity(0.25),
+            progress,
+          ),
         ),
       ),
     );
@@ -344,7 +359,8 @@ class _ColorItemState extends State<_ColorItem> with ClickableStateMixin {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white.withOpacity(0.75), width: 1),
-          borderRadius: const BorderRadius.only(topRight: Radius.circular(7)),
+          borderRadius:
+              BorderRadius.only(topRight: SmoothCornerRadius.circular(7)),
         ),
       ),
     );
@@ -355,7 +371,8 @@ class _ColorItemState extends State<_ColorItem> with ClickableStateMixin {
       child: Container(
         decoration: BoxDecoration(
           color: widget.color,
-          borderRadius: const BorderRadius.only(topRight: Radius.circular(7)),
+          borderRadius:
+              BorderRadius.only(topRight: SmoothCornerRadius.circular(7)),
         ),
       ),
     );
@@ -364,16 +381,17 @@ class _ColorItemState extends State<_ColorItem> with ClickableStateMixin {
   Container _buildGradient() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(topRight: Radius.circular(7)),
+        borderRadius:
+            BorderRadius.only(topRight: SmoothCornerRadius.circular(7)),
         gradient: LinearGradient(
           colors: [
             Colors.black.withOpacity(0),
             Colors.black.withOpacity(0),
-            Colors.black.withOpacity(0.25)
+            Colors.black.withOpacity(0.25),
           ],
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
-          stops: [0, 0.5, 1],
+          stops: const [0, 0.5, 1],
         ),
       ),
     );
@@ -391,7 +409,8 @@ class _ColorItemState extends State<_ColorItem> with ClickableStateMixin {
             color: Colors.white,
             size: 36,
           ),
-        ));
+      ),
+    );
   }
 
   Positioned _buildTextBar() {

@@ -88,13 +88,13 @@ class SRScrollbar extends StatelessWidget {
                       Colors.black,
                       Colors.transparent,
                       Colors.transparent,
-                      Colors.black
+                      Colors.black,
                     ],
                     stops: [
                       0.0,
                       stop,
                       1 - stop,
-                      1.0
+                      1.0,
                     ], // 10% purple, 80% transparent, 10% purple
                   ).createShader(rect);
                 },

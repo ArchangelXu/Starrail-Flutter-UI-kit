@@ -28,7 +28,7 @@ starrail_ui:
   git:
     url: https://github.com/ArchangelXu/Starrail-Flutter-UI-kit
     path: library
-    ref: c25d4e5308c0ee81f980ebccf219c4f2025d2827
+    ref: xxxx
 ```
 
 ## Usage

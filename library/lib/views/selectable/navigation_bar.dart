@@ -201,7 +201,7 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
                     widget.direction == Axis.horizontal ? widget.spacing : null,
                 height:
                     widget.direction == Axis.horizontal ? null : widget.spacing,
-              )
+              ),
             ],
           )
           .expand((e) => e)

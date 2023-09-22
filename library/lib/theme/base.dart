@@ -6,10 +6,10 @@ const srAnimationDuration = Duration(milliseconds: 200);
 const srAnimationCurve = Curves.easeInOutQuad;
 
 const List<Shadow> srTextShadow = [
-  Shadow(color: Color(0x1A000000), blurRadius: 4, offset: Offset(1, 1))
+  Shadow(color: Color(0x1A000000), blurRadius: 4, offset: Offset(1, 1)),
 ];
 const List<BoxShadow> srBoxShadow = [
-  BoxShadow(color: Color(0x33000000), blurRadius: 4, offset: Offset(0, 2))
+  BoxShadow(color: Color(0x33000000), blurRadius: 4, offset: Offset(0, 2)),
 ];
 
 final SliderThemeData srSliderThemeData = SliderThemeData(

@@ -216,7 +216,11 @@ class _Painter extends CustomPainter {
     var curvedProgress = progress;
     if (curvedProgress < 1) {
       drawRect = Rect.fromLTRB(
-          padding, padding - _borderWidth, rect.width - padding, rect.height);
+        padding,
+        padding - _borderWidth,
+        rect.width - padding,
+        rect.height,
+      );
       _paint.style = PaintingStyle.fill;
       _paint.color = backgroundColor;
       var rRect = RRect.fromRectAndCorners(

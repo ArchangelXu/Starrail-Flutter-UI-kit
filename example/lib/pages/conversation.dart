@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:starrail_ui/theme/colors.dart';
+import 'package:starrail_ui/views/base/squircle.dart';
 import 'package:starrail_ui/views/card.dart';
 import 'package:starrail_ui/views/misc/scroll.dart';
 
@@ -43,7 +44,7 @@ class _ConversationPageState extends State<ConversationPage> {
               fontSize: 11,
               color: Colors.black.withOpacity(0.5),
             ),
-          )
+          ),
       ],
     );
     return Container(
@@ -314,7 +315,7 @@ class _Bubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Radius corner = const Radius.circular(_radius);
+    Radius corner = SmoothCornerRadius.circular(_radius);
     BorderRadius borderRadius = BorderRadius.only(
       bottomLeft: corner,
       bottomRight: corner,

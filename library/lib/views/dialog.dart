@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:starrail_ui/theme/colors.dart';
 import 'package:starrail_ui/theme/dimens.dart';
+import 'package:starrail_ui/views/blur.dart';
 import 'package:starrail_ui/views/buttons/close.dart';
 import 'package:starrail_ui/views/card.dart';
 import 'package:starrail_ui/views/misc/scroll.dart';
@@ -74,14 +74,12 @@ class SRDialog extends StatelessWidget {
       transitionBuilder: (ctx, anim1, anim2, child) {
         var value = anim1.value;
         value = Curves.easeInOut.transform(value);
-        return BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 24 * value,
-            sigmaY: 24 * value,
-          ),
+        return Blurred(
+          blurSigma: 24 * value,
           child: Transform.translate(
-              offset: Offset(0, -8 * (1 - value)),
-              child: Opacity(opacity: value, child: child)),
+            offset: Offset(0, -8 * (1 - value)),
+            child: Opacity(opacity: value, child: child),
+          ),
           // child: FadeTransition(opacity: anim1, child: child),
         );
       },
@@ -145,7 +143,7 @@ class SRDialog extends StatelessWidget {
           message,
           style: const TextStyle(fontSize: srDialogMessageSize),
           textAlign: TextAlign.left,
-        )
+        ),
       ],
     );
   }

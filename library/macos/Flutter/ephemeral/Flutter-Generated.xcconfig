@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=/Users/xumingke/Library/flutter
-FLUTTER_APPLICATION_PATH=/Users/xumingke/Work/Flutter/starrail_ui
+FLUTTER_APPLICATION_PATH=/Users/xumingke/Work/Flutter/starrail_ui/library
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=0.0.1

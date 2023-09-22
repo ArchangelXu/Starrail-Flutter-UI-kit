@@ -33,7 +33,7 @@ class DialogPage extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       lorem(paragraphs: 3, words: 100),
-                    )
+                    ),
                   ],
                 ),
               ),

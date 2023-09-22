@@ -1,7 +1,9 @@
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:starrail_ui/theme/base.dart';
 import 'package:starrail_ui/theme/colors.dart';
 import 'package:starrail_ui/theme/dimens.dart';
+import 'package:starrail_ui/views/base/squircle.dart';
 
 class SRCard extends StatelessWidget {
   final Widget child;
@@ -20,10 +22,10 @@ class SRCard extends StatelessWidget {
           bottom: srCardFrameOffset,
         ),
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: srCardBackground,
             borderRadius: BorderRadius.only(
-              topRight: Radius.circular(srCardCornerRadius),
+              topRight: SmoothCornerRadius.circular(srCardCornerRadius),
             ),
             boxShadow: srBoxShadow,
           ),
@@ -50,11 +52,17 @@ class _Painter extends CustomPainter {
     Rect rect = Rect.fromLTRB(0, 0, size.width, size.height);
 
     canvas.drawRRect(
-        RRect.fromRectAndCorners(
-            Rect.fromLTRB(rect.left, rect.top + srCardFrameOffset,
-                rect.right - srCardFrameOffset, rect.bottom),
-            topRight: Radius.circular(srCardCornerRadius)),
-        _paint);
+      RRect.fromRectAndCorners(
+        Rect.fromLTRB(
+          rect.left,
+          rect.top + srCardFrameOffset,
+          rect.right - srCardFrameOffset,
+          rect.bottom,
+        ),
+        topRight: const Radius.circular(srCardCornerRadius),
+      ),
+      _paint,
+    );
   }
 
   @override

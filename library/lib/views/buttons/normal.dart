@@ -464,7 +464,9 @@ class _Painter extends CustomPainter {
       paint.style = PaintingStyle.fill;
       var touchColor = Colors.black;
       paint.color = Color.lerp(touchColor.withOpacity(0),
-          touchColor.withOpacity(0.2), touchProgress)!;
+        touchColor.withOpacity(0.2),
+        touchProgress,
+      )!;
       var inflated = rect.inflate(0.5);
       var radius = Radius.circular(inflated.height / 2);
       var rRect = RRect.fromRectAndCorners(
@@ -595,6 +597,7 @@ class _HighlightDot {
 
   void _update() {
     progress = min(1,
-        (DateTime.now().millisecondsSinceEpoch - startTimestamp) / totalTime);
+      (DateTime.now().millisecondsSinceEpoch - startTimestamp) / totalTime,
+    );
   }
 }

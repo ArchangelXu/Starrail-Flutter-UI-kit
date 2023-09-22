@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:starrail_ui/theme/colors.dart';
 import 'package:starrail_ui/theme/dimens.dart';
+import 'package:starrail_ui/views/base/squircle.dart';
 
 class SRTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -49,7 +50,7 @@ class _SRTextFieldState extends State<SRTextField> {
   Widget _buildFrame({required Widget child}) {
     var borderRadius = (widget.maxLines ?? 1) > 1
         ? BorderRadius.zero
-        : BorderRadius.circular(_radius);
+        : SmoothCornerBorderRadius.circular(_radius);
     InputDecorationTheme theme = InputDecorationTheme(
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:starrail_ui/views/base/squircle.dart';
 import 'package:starrail_ui/views/selectable/checkbox.dart';
 import 'package:starrail_ui/views/selectable/radio.dart';
 
@@ -192,9 +193,11 @@ class _SelectablePageState extends State<SelectablePage> {
         ? colorScheme.inverseSurface.withOpacity(0.05)
         : colorScheme.primaryContainer.withOpacity(0.4);
     return Container(
-      decoration:
-          BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: SmoothCornerBorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: child,
     );
   }
