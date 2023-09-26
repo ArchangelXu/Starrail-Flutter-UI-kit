@@ -5,6 +5,7 @@ import 'package:starrail_ui/views/base/squircle.dart';
 
 class SRTextField extends StatefulWidget {
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final int? maxLines;
   final int? maxLength;
   final bool? enabled;
@@ -14,6 +15,7 @@ class SRTextField extends StatefulWidget {
   const SRTextField({
     super.key,
     required this.controller,
+    this.focusNode,
     this.enabled,
     this.maxLines,
     this.maxLength,
@@ -91,6 +93,7 @@ class _SRTextFieldState extends State<SRTextField> {
       child: TextField(
         enabled: enabled,
         controller: widget.controller,
+        focusNode: widget.focusNode,
         onChanged: (value) {
           _updateShowClearButton();
           widget.onChanged?.call(value);
