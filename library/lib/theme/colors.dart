@@ -41,6 +41,7 @@ const Color srProgressBarBackground = Colors.black;
 //region text field
 const Color srTextFieldBackground = Color(0xFFD5D5D5);
 const Color srTextFieldBorder = Color(0xFF999999);
+const Color srTextFieldText = Color(0xFF000000);
 //endregion
 
 //region navigation bar

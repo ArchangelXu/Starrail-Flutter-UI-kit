@@ -11,7 +11,11 @@ const List<Shadow> srTextShadow = [
 const List<BoxShadow> srBoxShadow = [
   BoxShadow(color: Color(0x33000000), blurRadius: 4, offset: Offset(0, 2)),
 ];
-
+TextSelectionThemeData srTextSelectionThemeData = TextSelectionThemeData(
+  cursorColor: srHighlighted,
+  selectionColor: srHighlighted.withOpacity(0.5),
+  selectionHandleColor: srHighlighted,
+);
 final SliderThemeData srSliderThemeData = SliderThemeData(
   thumbShape: SRSliderValueIndicatorShape(),
   thumbColor: srHighlighted,

@@ -39,6 +39,7 @@ class _InputPageState extends State<InputPage> {
           children: [
             SRTextField(
               controller: _inputController1,
+              hint: "some default text",
               maxLines: 1,
             ),
             const SizedBox(height: 16),

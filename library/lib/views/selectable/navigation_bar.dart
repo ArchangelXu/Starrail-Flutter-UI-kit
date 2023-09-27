@@ -378,29 +378,26 @@ class _SRNavigationBarItemState extends State<SRNavigationBarItem>
           enabled: widget.selected || touchProgress > 0,
           duration: const Duration(seconds: 12),
           builder: (context, value) {
-            return Transform.rotate(
-              angle: 2 * pi * value,
-              child: SRSelectionAnimatedBuilder(
-                selected: widget.selected,
-                hasReverseAnimation: false,
-                duration: const Duration(milliseconds: 300),
-                builder: (context, selectionProgress, child) {
-                  return CustomPaint(
-                    painter: _BarItemPainter(
-                      progress: selectionProgress,
-                      hoverProgress: hoverProgress,
-                      touchProgress: touchProgress,
-                      padding: _padding,
-                      borderColor: widget.borderColor,
-                      selectedBackgroundColor: widget.selectedBackgroundColor,
-                      unselectedBackgroundColor:
-                          widget.unselectedBackgroundColor,
-                    ),
-                    child: child,
-                  );
-                },
-                child: buildGestureDetector(),
-              ),
+            return SRSelectionAnimatedBuilder(
+              selected: widget.selected,
+              hasReverseAnimation: false,
+              duration: const Duration(milliseconds: 300),
+              builder: (context, selectionProgress, child) {
+                return CustomPaint(
+                  painter: _BarItemPainter(
+                    progress: selectionProgress,
+                    hoverProgress: hoverProgress,
+                    touchProgress: touchProgress,
+                    padding: _padding,
+                    rotation: 2 * pi * value,
+                    borderColor: widget.borderColor,
+                    selectedBackgroundColor: widget.selectedBackgroundColor,
+                    unselectedBackgroundColor: widget.unselectedBackgroundColor,
+                  ),
+                  child: child,
+                );
+              },
+              child: buildGestureDetector(child: _buildIcon()),
             );
           },
         );
@@ -408,24 +405,17 @@ class _SRNavigationBarItemState extends State<SRNavigationBarItem>
     );
   }
 
-  Positioned _buildIcon() {
+  Widget _buildIcon() {
     var color =
         widget.selected ? widget.selectedIconColor : widget.unselectedIconColor;
-    return Positioned.fill(
-      child: IgnorePointer(
-        child: widget.icon.copyWith(color: color, size: _size / 2),
-      ),
+    return IgnorePointer(
+      child: widget.icon.copyWith(color: color, size: _size / 2),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SizedBox.square(dimension: _size, child: _buildPainter()),
-        _buildIcon(),
-      ],
-    );
+    return SizedBox.square(dimension: _size, child: _buildPainter());
   }
 }
 
@@ -499,6 +489,7 @@ class _BarItemPainter extends CustomPainter {
   final double hoverProgress;
   final double touchProgress;
   final double padding;
+  final double rotation;
   final Color unselectedBackgroundColor;
   final Color selectedBackgroundColor;
   final Color borderColor;
@@ -509,6 +500,7 @@ class _BarItemPainter extends CustomPainter {
     required this.hoverProgress,
     required this.touchProgress,
     required this.padding,
+    required this.rotation,
     required this.unselectedBackgroundColor,
     required this.selectedBackgroundColor,
     required this.borderColor,
@@ -518,6 +510,7 @@ class _BarItemPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.centerPivot(rect);
+    canvas.rotate(rotation);
     // draw background
     Rect drawRect = Rect.fromCenter(
       center: Offset.zero,
@@ -560,6 +553,7 @@ class _BarItemPainter extends CustomPainter {
           Path()..addOval(centerRect),
           doAntiAlias: false,
         );
+        canvas.rotate(-rotation);
         canvas.rotate(-shimmerAngle);
         canvas.translate(distance, 0);
         _paint.style = PaintingStyle.fill;
@@ -567,6 +561,7 @@ class _BarItemPainter extends CustomPainter {
 
         canvas.drawRect(drawRect, _paint);
         canvas.rotate(shimmerAngle);
+        canvas.rotate(rotation);
         canvas.restore();
       }
       _paint.style = PaintingStyle.fill;
@@ -627,7 +622,7 @@ class _BarItemPainter extends CustomPainter {
         canvas.drawArc(drawRect, 0, -sweepAngle, false, _paint);
       }
     }
-
+    canvas.rotate(-rotation);
     canvas.resetPivot(rect);
   }
 
@@ -648,6 +643,7 @@ class _BarItemPainter extends CustomPainter {
     return oldDelegate is! _BarItemPainter ||
         oldDelegate.progress != progress ||
         oldDelegate.hoverProgress != hoverProgress ||
-        oldDelegate.touchProgress != touchProgress;
+        oldDelegate.touchProgress != touchProgress ||
+        oldDelegate.rotation != rotation;
   }
 }
