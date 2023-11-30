@@ -8,7 +8,7 @@ class DialogPage extends StatelessWidget {
   const DialogPage({super.key});
 
   void _showCustomDialog(BuildContext context) {
-    return SRDialog.showCustom(
+    SRDialog.showCustom(
       context: context,
       dialog: SRDialog.custom(
         child: Padding(

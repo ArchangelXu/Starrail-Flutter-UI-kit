@@ -12,12 +12,12 @@ import 'package:starrail_ui/views/progress/circular.dart';
 class SRDialog extends StatelessWidget {
   final Widget child;
 
-  static void showMessage({
+  static Future<T?> showMessage<T>({
     required BuildContext context,
     String? title,
     required String message,
   }) {
-    showCustom(
+    return showCustom(
       context: context,
       dialog: SRDialog.message(
         context: context,
@@ -27,11 +27,11 @@ class SRDialog extends StatelessWidget {
     );
   }
 
-  static void showCustom({
+  static Future<T?> showCustom<T>({
     required BuildContext context,
     required SRDialog dialog,
   }) {
-    _showBlurBackgroundDialog(
+    return _showBlurBackgroundDialog<T>(
       context: context,
       builder: (context) => dialog,
     );
