@@ -27,6 +27,7 @@ class SRScrollView extends StatelessWidget {
       padding2 = padding2.add(padding!);
     }
     return SRScrollbar(
+      controller: controller,
       direction: direction,
       child: children.length == 1
           ? SingleChildScrollView(
@@ -51,10 +52,16 @@ class SRScrollView extends StatelessWidget {
 
 class SRScrollbar extends StatelessWidget {
   static const _fadeLength = srScrollbarFadeLength;
-  final Widget child;
+  final ScrollController? controller;
   final Axis direction;
+  final Widget child;
 
-  const SRScrollbar({super.key, required this.child, required this.direction});
+  const SRScrollbar({
+    super.key,
+    required this.child,
+    required this.direction,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -65,6 +72,7 @@ class SRScrollbar extends StatelessWidget {
           double stop = _fadeLength / size;
           return SRInteractiveBuilder(
             builder: (context, hoverProgress, touchProgress) => RawScrollbar(
+              controller: controller,
               radius: Radius.zero,
               padding: EdgeInsets.symmetric(
                 horizontal: direction == Axis.vertical ? 0 : _fadeLength,
