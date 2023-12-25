@@ -8,11 +8,13 @@ class SRScrollView extends StatelessWidget {
   final List<Widget> children;
   final Axis direction;
   final EdgeInsetsGeometry? padding;
+  final ScrollController? controller;
 
   const SRScrollView({
     super.key,
     required this.children,
     this.padding,
+    this.controller,
     this.direction = Axis.vertical,
   });
 
@@ -31,14 +33,16 @@ class SRScrollView extends StatelessWidget {
               scrollDirection: direction,
               padding: padding2,
               physics: const BouncingScrollPhysics(),
-              primary: true,
+              primary: controller == null,
+              controller: controller,
               child: children[0],
             )
           : ListView(
               scrollDirection: direction,
               padding: padding2,
               physics: const BouncingScrollPhysics(),
-              primary: true,
+              primary: controller == null,
+              controller: controller,
               children: children,
             ),
     );
