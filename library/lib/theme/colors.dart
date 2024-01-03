@@ -9,6 +9,7 @@ const Color srTextLight = Color(0xFF5F5F5F);
 //region button
 const Color srButtonBackground = Color(0xFFE2E2E2);
 const Color srButtonDisabled = Color(0xFFA2A2A2);
+const Color srButtonText = Color(0xFF000000);
 const Color srButtonBackgroundHighlighted = Color(0xFFFEC85B);
 const LinearGradient srButtonBackgroundHighlightedGradient = LinearGradient(
   colors: [

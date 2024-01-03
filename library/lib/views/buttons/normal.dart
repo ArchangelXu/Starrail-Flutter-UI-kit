@@ -91,7 +91,7 @@ class SRButton extends StatefulWidget {
       style: TextStyle(
         fontSize: srButtonTextSize,
         fontWeight: FontWeight.bold,
-        color: onPress != null ? null : srButtonDisabled,
+        color: onPress != null ? srButtonText : srButtonDisabled,
         shadows: onPress != null ? null : srTextShadow,
       ),
     );
