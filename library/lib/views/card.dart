@@ -13,22 +13,24 @@ class SRCard extends StatelessWidget {
   });
 
   Widget _buildFrame({Widget? child}) {
-    return CustomPaint(
-      painter: _Painter(),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: srCardFrameOffset,
-          bottom: srCardFrameOffset,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: srCardBackground,
-            borderRadius: BorderRadius.only(
-              topRight: SmoothCornerRadius.circular(srCardCornerRadius),
-            ),
-            boxShadow: srBoxShadow,
+    return RepaintBoundary(
+      child: CustomPaint(
+        painter: _Painter(),
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: srCardFrameOffset,
+            bottom: srCardFrameOffset,
           ),
-          child: child,
+          child: Container(
+            decoration: BoxDecoration(
+              color: srCardBackground,
+              borderRadius: BorderRadius.only(
+                topRight: SmoothCornerRadius.circular(srCardCornerRadius),
+              ),
+              boxShadow: srBoxShadow,
+            ),
+            child: child,
+          ),
         ),
       ),
     );

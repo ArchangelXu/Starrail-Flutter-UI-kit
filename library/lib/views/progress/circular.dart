@@ -114,15 +114,17 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
       child: AnimatedBuilder(
         animation: _outerFlashAnimation,
         builder: (context, child) {
-          return CustomPaint(
-            painter: _Painter(
-              progress: _outerFlashAnimation.value,
-              radius: widget.outerDotsRadius,
-              borderWidth: 1,
-              color: Colors.white,
+          return RepaintBoundary(
+            child: CustomPaint(
+              painter: _Painter(
+                progress: _outerFlashAnimation.value,
+                radius: widget.outerDotsRadius,
+                borderWidth: 1,
+                color: Colors.white,
+              ),
+              // size: Size.square(90),
+              child: child,
             ),
-            // size: Size.square(90),
-            child: child,
           );
         },
         child: child,
@@ -144,14 +146,16 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
           child: AnimatedBuilder(
             animation: _innerFlashAnimation,
             builder: (context, child) {
-              return CustomPaint(
-                painter: _Painter(
-                  progress: _innerFlashAnimation.value,
-                  radius: widget.innerDotsRadius,
-                  borderWidth: 0.5,
-                  color: Colors.white,
+              return RepaintBoundary(
+                child: CustomPaint(
+                  painter: _Painter(
+                    progress: _innerFlashAnimation.value,
+                    radius: widget.innerDotsRadius,
+                    borderWidth: 0.5,
+                    color: Colors.white,
+                  ),
+                  // size: Size.square(75),
                 ),
-                // size: Size.square(75),
               );
             },
           ),

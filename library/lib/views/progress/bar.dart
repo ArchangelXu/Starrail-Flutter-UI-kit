@@ -21,13 +21,15 @@ class SRProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: const Size.fromHeight(13),
-      painter: _Painter(
-        foreground: foregroundColor,
-        background: backgroundColor,
-        progress: progress,
-        label: labelBuilder?.call(progress),
+    return RepaintBoundary(
+      child: CustomPaint(
+        size: const Size.fromHeight(13),
+        painter: _Painter(
+          foreground: foregroundColor,
+          background: backgroundColor,
+          progress: progress,
+          label: labelBuilder?.call(progress),
+        ),
       ),
     );
   }

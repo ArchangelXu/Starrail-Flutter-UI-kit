@@ -240,18 +240,20 @@ class _SRNavigationBarState extends State<SRNavigationBar> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) {
-          Widget result = CustomPaint(
-            painter: _BarPainter(
-              direction: widget.direction,
-              lineThickness: SRNavigationBar._lineThickness,
-              lineColor: lineColor,
-              lineInfo: _getLineInfo(
-                widget.direction == Axis.horizontal
-                    ? constraints.maxWidth
-                    : constraints.maxHeight,
+          Widget result = RepaintBoundary(
+            child: CustomPaint(
+              painter: _BarPainter(
+                direction: widget.direction,
+                lineThickness: SRNavigationBar._lineThickness,
+                lineColor: lineColor,
+                lineInfo: _getLineInfo(
+                  widget.direction == Axis.horizontal
+                      ? constraints.maxWidth
+                      : constraints.maxHeight,
+                ),
               ),
+              child: _buildForeground(),
             ),
-            child: _buildForeground(),
           );
           if (widget.scroll) {
             result = Center(
@@ -383,18 +385,21 @@ class _SRNavigationBarItemState extends State<SRNavigationBarItem>
               hasReverseAnimation: false,
               duration: const Duration(milliseconds: 300),
               builder: (context, selectionProgress, child) {
-                return CustomPaint(
-                  painter: _BarItemPainter(
-                    progress: selectionProgress,
-                    hoverProgress: hoverProgress,
-                    touchProgress: touchProgress,
-                    padding: _padding,
-                    rotation: 2 * pi * value,
-                    borderColor: widget.borderColor,
-                    selectedBackgroundColor: widget.selectedBackgroundColor,
-                    unselectedBackgroundColor: widget.unselectedBackgroundColor,
+                return RepaintBoundary(
+                  child: CustomPaint(
+                    painter: _BarItemPainter(
+                      progress: selectionProgress,
+                      hoverProgress: hoverProgress,
+                      touchProgress: touchProgress,
+                      padding: _padding,
+                      rotation: 2 * pi * value,
+                      borderColor: widget.borderColor,
+                      selectedBackgroundColor: widget.selectedBackgroundColor,
+                      unselectedBackgroundColor:
+                          widget.unselectedBackgroundColor,
+                    ),
+                    child: child,
                   ),
-                  child: child,
                 );
               },
               child: buildGestureDetector(child: _buildIcon()),

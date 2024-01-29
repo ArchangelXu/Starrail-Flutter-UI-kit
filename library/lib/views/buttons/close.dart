@@ -29,14 +29,16 @@ class _SRCloseButtonState extends State<SRCloseButton>
     return SizedBox.square(
       dimension: 20,
       child: SRInteractiveBuilder(
-        builder: (context, hoverProgress, touchProgress) => CustomPaint(
-          painter: _Painter(
-            color: widget.color,
-            hoverProgress: hoverProgress,
-            touchProgress: touchProgress,
-            strokeWidth: widget.strokeWidth,
+        builder: (context, hoverProgress, touchProgress) => RepaintBoundary(
+          child: CustomPaint(
+            painter: _Painter(
+              color: widget.color,
+              hoverProgress: hoverProgress,
+              touchProgress: touchProgress,
+              strokeWidth: widget.strokeWidth,
+            ),
+            child: buildGestureDetector(),
           ),
-          child: buildGestureDetector(),
         ),
       ),
     );

@@ -7,6 +7,7 @@ import 'package:starrail_ui/theme/base.dart';
 import 'package:starrail_ui/theme/colors.dart';
 import 'package:starrail_ui/theme/dimens.dart';
 import 'package:starrail_ui/util/canvas.dart';
+import 'package:starrail_ui/views/base/focus.dart';
 import 'package:starrail_ui/views/base/listener.dart';
 import 'package:starrail_ui/views/misc/icon.dart';
 
@@ -203,64 +204,76 @@ class _SRButtonState extends State<SRButton>
     super.dispose();
   }
 
+  Widget _buildCustomPaint(double hoverProgress, double touchProgress) {
+    BoxConstraints? constraints;
+    EdgeInsets padding;
+    double? width;
+    double? height;
+    if (widget.circular) {
+      padding = EdgeInsets.zero;
+      Size size =
+          widget.circleSize ?? const Size(_circularMinSize, _circularMinSize);
+      width = size.width;
+      height = size.height;
+    } else {
+      constraints = _constraints;
+      padding = const EdgeInsets.symmetric(horizontal: _minHeight * 2 / 3);
+    }
+    return RepaintBoundary(
+      child: CustomPaint(
+        painter: _Painter(
+          enabled: hasCallback,
+          repaint: _repaint,
+          dots: _highlightDots,
+          hoverProgress: hoverProgress,
+          touchProgress: touchProgress,
+          highlightType: widget.highlightType,
+          backgroundColor: widget.backgroundColor,
+        ),
+        child: buildGestureDetector(
+          child: Container(
+            width: width,
+            height: height,
+            constraints: constraints,
+            padding: padding,
+            child: widget.expanded
+                ? Row(
+                    children: [Expanded(child: Center(child: widget.child))],
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [widget.child],
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SRInteractiveBuilder(
       hoverEnabled: hasCallback,
       touchEnabled: hasCallback,
       builder: (context, hoverProgress, touchProgress) {
-        BoxConstraints? constraints;
-        EdgeInsets padding;
-        double? width;
-        double? height;
-        if (widget.circular) {
-          padding = EdgeInsets.zero;
-          Size size = widget.circleSize ??
-              const Size(_circularMinSize, _circularMinSize);
-          width = size.width;
-          height = size.height;
-        } else {
-          constraints = _constraints;
-          padding = const EdgeInsets.symmetric(horizontal: _minHeight * 2 / 3);
-        }
-        Widget customPaint = CustomPaint(
-          painter: _Painter(
-            enabled: hasCallback,
-            repaint: _repaint,
-            dots: _highlightDots,
-            hoverProgress: hoverProgress,
-            touchProgress: touchProgress,
-            highlightType: widget.highlightType,
-            backgroundColor: widget.backgroundColor,
-          ),
-          child: buildGestureDetector(
-            child: Container(
-              width: width,
-              height: height,
-              constraints: constraints,
-              padding: padding,
-              child: widget.expanded
-                  ? Row(
-                      children: [Expanded(child: Center(child: widget.child))],
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [widget.child],
-                    ),
-            ),
-          ),
-        );
         if (widget.highlightType != SRButtonHighlightType.none) {
-          return StreamBuilder(
-            stream: _repaintStream,
-            builder: (context, snapshot) {
-              _repaint?.value = DateTime.now().millisecondsSinceEpoch;
-              return customPaint;
+          return FocusAwareBuilder(
+            builder: (foreground) {
+              return StreamBuilder(
+                stream: _repaintStream,
+                builder: (context, snapshot) {
+                  if (foreground &&
+                      widget.highlightType != SRButtonHighlightType.none) {
+                    _repaint?.value = DateTime.now().millisecondsSinceEpoch;
+                  }
+                  return _buildCustomPaint(hoverProgress, touchProgress);
+                },
+              );
             },
           );
         }
-        return customPaint;
+        return _buildCustomPaint(hoverProgress, touchProgress);
       },
     );
   }
@@ -463,7 +476,8 @@ class _Painter extends CustomPainter {
       Paint paint = Paint();
       paint.style = PaintingStyle.fill;
       var touchColor = Colors.black;
-      paint.color = Color.lerp(touchColor.withOpacity(0),
+      paint.color = Color.lerp(
+        touchColor.withOpacity(0),
         touchColor.withOpacity(0.2),
         touchProgress,
       )!;
@@ -500,7 +514,6 @@ class _Painter extends CustomPainter {
           ),
         ),
       Colors.black.withOpacity(0.5),
-      // Colors.red,
       2,
       true,
     );
@@ -596,7 +609,8 @@ class _HighlightDot {
   }
 
   void _update() {
-    progress = min(1,
+    progress = min(
+      1,
       (DateTime.now().millisecondsSinceEpoch - startTimestamp) / totalTime,
     );
   }

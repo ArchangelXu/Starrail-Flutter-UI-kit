@@ -153,15 +153,17 @@ class _Container extends StatelessWidget {
   Widget build(BuildContext context) {
     return SRSelectionAnimatedBuilder(
       selected: selected,
-      builder: (context, value, child) => CustomPaint(
-        painter: _Painter(
-          progress: value,
-          scroll: scroll,
-          overlapSize: overlapSize,
-          foregroundColor: selectedColor,
-          backgroundColor: unselectedColor,
+      builder: (context, value, child) => RepaintBoundary(
+        child: CustomPaint(
+          painter: _Painter(
+            progress: value,
+            scroll: scroll,
+            overlapSize: overlapSize,
+            foregroundColor: selectedColor,
+            backgroundColor: unselectedColor,
+          ),
+          child: child,
         ),
-        child: child,
       ),
       child: Center(child: content),
     );
