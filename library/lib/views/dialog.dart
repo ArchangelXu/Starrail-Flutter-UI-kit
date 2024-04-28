@@ -11,6 +11,7 @@ import 'package:starrail_ui/views/progress/circular.dart';
 
 class SRDialog extends StatelessWidget {
   final Widget child;
+  final BoxConstraints? constraints;
 
   static Future<T?> showMessage<T>({
     required BuildContext context,
@@ -124,9 +125,11 @@ class SRDialog extends StatelessWidget {
   factory SRDialog.custom({
     Key? key,
     required Widget child,
+    BoxConstraints? constraints,
   }) {
     return SRDialog._internal(
       key: key,
+      constraints: constraints,
       child: child,
     );
   }
@@ -134,6 +137,7 @@ class SRDialog extends StatelessWidget {
   const SRDialog._internal({
     super.key,
     required this.child,
+    this.constraints,
   });
 
   static Widget _buildMessageRow(String message) {
@@ -150,7 +154,10 @@ class SRDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _DialogContainer(child: SRCard(child: child));
+    return _DialogContainer(
+      constraints: constraints,
+      child: SRCard(child: child),
+    );
   }
 }
 
@@ -232,7 +239,9 @@ class _DialogContainer extends StatelessWidget {
     this.borderRadius,
   }) : super(key: key);
 
-  Map<String, double> _getConstraints(BuildContext context) {
+  ({double bottomPadding, double maxWidth, double maxHeight}) _getConstraints(
+    BuildContext context,
+  ) {
     final MediaQueryData? data = MediaQuery.maybeOf(context);
     double bottomPadding = 0;
     bool landscape = data?.orientation == Orientation.landscape;
@@ -240,6 +249,10 @@ class _DialogContainer extends StatelessWidget {
         (landscape ? _landscapeOuterPadding : _portraitOuterPadding) * 2;
     double maxWidth = landscape ? 640 : 360;
     double maxHeight = landscape ? 320 : 540;
+    if (constraints != null) {
+      maxWidth = constraints!.maxWidth;
+      maxHeight = constraints!.maxHeight;
+    }
     if (data != null) {
       if (data.viewInsets.bottom > 0) {
         bottomPadding = data.viewInsets.bottom;
@@ -251,19 +264,20 @@ class _DialogContainer extends StatelessWidget {
         maxHeight = data.size.height - padding;
       }
     }
-    return {
-      "bottomPadding": bottomPadding,
-      "maxWidth": maxWidth,
-      "maxHeight": maxHeight,
-    };
+    return (
+      bottomPadding: bottomPadding,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final data = _getConstraints(context);
-    final bottomPadding = data['bottomPadding']!;
-    final maxWidth = data['maxWidth']!;
-    final maxHeight = data['maxHeight']!;
+    final bottomPadding = data.bottomPadding;
+    final maxWidth = data.maxWidth;
+    final maxHeight = data.maxHeight;
+
     return Material(
       type: MaterialType.transparency,
       child: Center(
@@ -271,7 +285,7 @@ class _DialogContainer extends StatelessWidget {
           margin: EdgeInsets.only(bottom: bottomPadding),
           padding: padding,
           width: maxWidth,
-          constraints: constraints ?? BoxConstraints(maxHeight: maxHeight),
+          constraints: BoxConstraints(maxHeight: maxHeight),
           child: child,
         ),
       ),

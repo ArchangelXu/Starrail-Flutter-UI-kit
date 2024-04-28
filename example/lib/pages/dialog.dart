@@ -11,6 +11,7 @@ class DialogPage extends StatelessWidget {
     SRDialog.showCustom(
       context: context,
       dialog: SRDialog.custom(
+        constraints: const BoxConstraints(maxWidth: 720, maxHeight: 360),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -22,8 +23,7 @@ class DialogPage extends StatelessWidget {
                 showDivider: true,
                 title: "Custom Dialog",
               ),
-              SizedBox(
-                height: 200,
+              Expanded(
                 child: SRScrollView(
                   children: [
                     Image.asset(
@@ -44,6 +44,14 @@ class DialogPage extends StatelessWidget {
     );
   }
 
+/*
+我：谁是小可爱呀？
+宝宝：我
+我：爸爸抱一下owo
+宝宝：（玩积木）可是，我要忙着呢
+我：啊...（失落）
+宝宝：（转过来，把我的手扒拉开）好，去上班吧
+* */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
