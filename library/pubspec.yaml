@@ -17,7 +17,7 @@ dependencies:
     git:
       url: https://github.com/aloisdeniel/figma_squircle.git
       ref: main
-  rxdart: ^0.27.7
+  rxdart: ^0.28.0
   focus_detector: ^2.0.1
 
 dev_dependencies:
