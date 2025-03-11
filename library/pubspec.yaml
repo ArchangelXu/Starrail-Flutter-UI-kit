@@ -11,11 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^2.0.10+1
-  collection: ^1.18.0
+  collection: ^1.19.1
   universal_io: ^2.2.2
   figma_squircle: # ^0.5.5 not on pub.dev, so use latest version on github
     git:
-      url: https://github.com/aloisdeniel/figma_squircle.git
+      #      url: https://github.com/aloisdeniel/figma_squircle.git
+      url: https://github.com/sinnoorc/figma_squircle.git
       ref: main
   rxdart: ^0.28.0
   focus_detector: ^2.0.1
