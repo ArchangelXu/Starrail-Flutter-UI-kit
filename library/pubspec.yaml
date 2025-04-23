@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^2.0.10+1
+  flutter_svg: ^2.1.0
   collection: ^1.19.1
   universal_io: ^2.2.2
   figma_squircle: # ^0.5.5 not on pub.dev, so use latest version on github
