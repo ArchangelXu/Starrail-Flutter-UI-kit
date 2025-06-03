@@ -15,7 +15,6 @@ dependencies:
   universal_io: ^2.2.2
     #  figma_squircle: # ^0.5.5 not on pub.dev, so use latest version on github
     #    git:
-    url: https://github.com/sinnoorc/figma_squircle.git
   #      url: https://github.com/sinnoorc/figma_squircle.git
   #      ref: main
   figma_squircle: ^0.6.3
