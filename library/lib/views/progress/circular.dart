@@ -38,6 +38,8 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
   late final AnimationController _outerFlashAnimationController;
   late final AnimationController _innerFlashAnimationController;
 
+  // 添加取消令牌来跟踪延迟任务
+  late final Future<void> _innerAnimationsFuture;
   @override
   void initState() {
     super.initState();
@@ -46,6 +48,9 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    // 取消延迟任务，防止在dispose后执行
+    _innerAnimationsFuture.timeout(Duration.zero, onTimeout: () => null);
+
     _outerRotationAnimationController.dispose();
     _innerRotationAnimationController.dispose();
     _outerFlashAnimationController.dispose();
@@ -92,11 +97,14 @@ class _SRLoadingState extends State<SRLoading> with TickerProviderStateMixin {
         Tween(begin: 0.0, end: 2.0).animate(_innerFlashAnimationController);
     _outerRotationAnimationController.repeat();
     _outerFlashAnimationController.repeat();
-    Future.delayed(
+    _innerAnimationsFuture = Future.delayed(
       const Duration(milliseconds: 500),
           () {
-        _innerRotationAnimationController.repeat();
-        _innerFlashAnimationController.repeat();
+        // 检查组件是否仍然有效
+        if (mounted) {
+          _innerRotationAnimationController.repeat();
+          _innerFlashAnimationController.repeat();
+        }
       },
     );
   }

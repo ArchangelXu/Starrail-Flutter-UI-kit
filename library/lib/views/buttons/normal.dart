@@ -7,7 +7,6 @@ import 'package:starrail_ui/theme/base.dart';
 import 'package:starrail_ui/theme/colors.dart';
 import 'package:starrail_ui/theme/dimens.dart';
 import 'package:starrail_ui/util/canvas.dart';
-import 'package:starrail_ui/views/base/focus.dart';
 import 'package:starrail_ui/views/base/listener.dart';
 import 'package:starrail_ui/views/misc/icon.dart';
 
@@ -45,16 +44,16 @@ class SRButton extends StatefulWidget {
     VoidCallback? onLongPress,
   }) {
     assert(
-      highlightType != SRButtonHighlightType.highlightedPlus,
-      "Cannot use SRButtonHighlightType.highlightedPlus for circular buttons!",
+    highlightType != SRButtonHighlightType.highlightedPlus,
+    "Cannot use SRButtonHighlightType.highlightedPlus for circular buttons!",
     );
     assert(
-      !(child == null && iconPath == null && iconData == null),
-      "Child or iconPath of iconData must be set!",
+    !(child == null && iconPath == null && iconData == null),
+    "Child or iconPath of iconData must be set!",
     );
     assert(
-      [child, iconPath, iconData].whereNotNull().length == 1,
-      "Only one of child, iconPath and iconData should be set!",
+    [child, iconPath, iconData].whereNotNull().length == 1,
+    "Only one of child, iconPath and iconData should be set!",
     );
     bool disabled = onPress == null && onLongPress == null;
     SRButton button = SRButton.custom(
@@ -120,10 +119,8 @@ class SRButton extends StatefulWidget {
     VoidCallback? onLongPress,
   }) {
     assert(
-        !(highlightType != null &&
-            highlightType != SRButtonHighlightType.none &&
-            backgroundColor != null),
-        "Use either backgroundColor or SRButtonHighlightType.highlighted(or "
+    !(highlightType != null && highlightType != SRButtonHighlightType.none && backgroundColor != null),
+    "Use either backgroundColor or SRButtonHighlightType.highlighted(or "
         "SRButtonHighlightType.highlightedPlus)! Now highlightType= $highlightType, "
         "backgroundColor= $backgroundColor");
     return SRButton._internal(
@@ -169,8 +166,7 @@ class SRButton extends StatefulWidget {
   State<SRButton> createState() => _SRButtonState();
 }
 
-class _SRButtonState extends State<SRButton>
-    with TickerProviderStateMixin, ClickableStateMixin {
+class _SRButtonState extends State<SRButton> with TickerProviderStateMixin, ClickableStateMixin {
   static const double _minHeight = 32;
   static const double _circularMinSize = 26;
   static const _constraints = BoxConstraints(
@@ -191,8 +187,7 @@ class _SRButtonState extends State<SRButton>
   void initState() {
     super.initState();
     if (widget.highlightType != SRButtonHighlightType.none) {
-      _repaintStream =
-          Stream.periodic(const Duration(milliseconds: 1000 ~/ 60));
+      _repaintStream = Stream.periodic(const Duration(milliseconds: 1000 ~/ 60));
       _repaint = ValueNotifier(0);
       _highlightDots = [];
     }
@@ -211,8 +206,7 @@ class _SRButtonState extends State<SRButton>
     double? height;
     if (widget.circular) {
       padding = EdgeInsets.zero;
-      Size size =
-          widget.circleSize ?? const Size(_circularMinSize, _circularMinSize);
+      Size size = widget.circleSize ?? const Size(_circularMinSize, _circularMinSize);
       width = size.width;
       height = size.height;
     } else {
@@ -238,13 +232,13 @@ class _SRButtonState extends State<SRButton>
             padding: padding,
             child: widget.expanded
                 ? Row(
-                    children: [Expanded(child: Center(child: widget.child))],
-                  )
+              children: [Expanded(child: Center(child: widget.child))],
+            )
                 : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [widget.child],
-                  ),
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [widget.child],
+            ),
           ),
         ),
       ),
@@ -258,18 +252,13 @@ class _SRButtonState extends State<SRButton>
       touchEnabled: hasCallback,
       builder: (context, hoverProgress, touchProgress) {
         if (widget.highlightType != SRButtonHighlightType.none) {
-          return FocusAwareBuilder(
-            builder: (foreground) {
-              return StreamBuilder(
-                stream: _repaintStream,
-                builder: (context, snapshot) {
-                  if (foreground &&
-                      widget.highlightType != SRButtonHighlightType.none) {
-                    _repaint?.value = DateTime.now().millisecondsSinceEpoch;
-                  }
-                  return _buildCustomPaint(hoverProgress, touchProgress);
-                },
-              );
+          return StreamBuilder(
+            stream: _repaintStream,
+            builder: (context, snapshot) {
+              if (widget.highlightType != SRButtonHighlightType.none) {
+                _repaint?.value = DateTime.now().millisecondsSinceEpoch;
+              }
+              return _buildCustomPaint(hoverProgress, touchProgress);
             },
           );
         }
@@ -456,8 +445,7 @@ class _Painter extends CustomPainter {
       paint.style = PaintingStyle.stroke;
       paint.strokeWidth = 1;
       var hoverColor = Colors.white;
-      paint.color =
-          Color.lerp(hoverColor.withOpacity(0), hoverColor, progress)!;
+      paint.color = Color.lerp(hoverColor.withOpacity(0), hoverColor, progress)!;
       var inflated = rect.inflate(0.5);
       var radius = Radius.circular(inflated.height / 2);
       var rRect = RRect.fromRectAndCorners(
@@ -586,8 +574,7 @@ class _HighlightDot {
 
   Offset get currentLocation => startLocation.translate(-speed * progress, 0);
 
-  double get currentOpacity =>
-      Curves.easeInOutSine.transform(-2 * (progress - 0.5).abs() + 1);
+  double get currentOpacity => Curves.easeInOutSine.transform(-2 * (progress - 0.5).abs() + 1);
 
   _HighlightDot(Rect rect) {
     var random = Random();
@@ -598,12 +585,10 @@ class _HighlightDot {
     startTimestamp = DateTime.now().millisecondsSinceEpoch;
     speed = _Painter._highlightDotMinTranslationPerSecond +
         random.nextDouble() *
-            (_Painter._highlightDotMaxTranslationPerSecond -
-                _Painter._highlightDotMinTranslationPerSecond);
+            (_Painter._highlightDotMaxTranslationPerSecond - _Painter._highlightDotMinTranslationPerSecond);
     totalTime = (_Painter._highlightDotMinVisibleMilliseconds +
-            random.nextDouble() *
-                (_Painter._highlightDotMaxVisibleMilliseconds -
-                    _Painter._highlightDotMinVisibleMilliseconds))
+        random.nextDouble() *
+            (_Painter._highlightDotMaxVisibleMilliseconds - _Painter._highlightDotMinVisibleMilliseconds))
         .toInt();
     progress = 0;
   }
